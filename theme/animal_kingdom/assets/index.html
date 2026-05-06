@@ -13,7 +13,6 @@ body { margin:0; font-family:Arial; background:white; text-align:center; }
   justify-content:center;
   align-items:center;
   height:100vh;
-  background:white;
 }
 
 #game { display:none; }
@@ -50,9 +49,13 @@ body { margin:0; font-family:Arial; background:white; text-align:center; }
 .correctMark { color:green; }
 .wrongMark { color:red; }
 
-.hint { border:3px solid orange; }
-
 #scoreScreen { display:none; font-size:24px; padding-top:50px; }
+
+button {
+  padding:10px 20px;
+  font-size:18px;
+  margin-top:20px;
+}
 </style>
 </head>
 
@@ -69,7 +72,7 @@ body { margin:0; font-family:Arial; background:white; text-align:center; }
 
 <div id="scoreScreen">
   <div id="finalScore"></div>
-  <button onclick="restartGame()">Play Again</button>
+  <button onclick="restartGame()">🔄 Play Again</button>
 </div>
 
 <!-- ✅ RELATIVE PATHS -->
@@ -145,7 +148,7 @@ function showScore(){
   document.getElementById("game").style.display="none";
   document.getElementById("scoreScreen").style.display="block";
   document.getElementById("finalScore").innerHTML =
-    `Score: ${score}/${questions.length}`;
+    `🎉 Score: ${score}/${questions.length}`;
 }
 
 function restartGame(){
