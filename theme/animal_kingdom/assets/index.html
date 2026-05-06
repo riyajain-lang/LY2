@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Game</title>
+
+<style>
+body { 
+  margin:0; 
+  font-family:Arial; 
+  background:white;
+  text-align:center; 
+}
+
+#splash {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:white;
+}
+
+#splash img { width:180px; }
+
+#game { display:none; }
+
+#question { font-size:22px; margin:10px; }
+
+.options {
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+}
+
+.option {
+  width:30%;
+  background:white;
+  border-radius:12px;
+  padding:8px;
+  position:relative;
+  cursor:pointer;
+}
+
+.option img {
+  width:100%;
+  height:180px;
+  object-fit:contain;
+}
+
+.correctMark, .wrongMark {
+  position:absolute;
+  top:5px;
+  right:5px;
+  font-size:28px;
+  display:none;
+}
+
+.correctMark { color:green; }
+.wrongMark { color:red; }
+
+.hint { border:3px solid orange; }
+
+#scoreScreen {
+  display:none;
+  font-size:24px;
+  padding-top:50px;
+}
+
+#scoreScreen button {
+  padding:10px 20px;
+  font-size:18px;
+  margin-top:20px;
+  border:none;
+  border-radius:8px;
+  background:#4CAF50;
+  color:white;
+  cursor:pointer;
+}
+
+#scoreScreen button:hover {
+  background:#45a049;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <img src="/LY2/theme/animal_kingdom/assets/innovine-logo.png">
+</div>
+
+<!-- Game -->
+<div id="game">
+  <div id="question"></div>
+  <div class="options" id="options"></div>
+</div>
+
+<!-- Score -->
+<div id="scoreScreen">
+  <div id="finalScore"></div>
+  <button onclick="restartGame()">🔄 Play Again</button>
+</div>
+
+<!-- Sounds -->
+<audio id="correctSound" src="/LY2/theme/animal_kingdom/assets/correct.mp3"></audio>
+<audio id="wrongSound" src="/LY2/theme/animal_kingdom/assets/wrong.mp3"></audio>
+
+<script>
+const basePath = "/LY2/theme/animal_kingdom/assets/";
+
+const questions = [
+{q:"Identify the elephant", correct:"elephant", options:["elephant","cat","monkey"]},
+{q:"Identify the lion", correct:"lion", options:["lion","giraffe","cat"]},
+{q:"Identify the cow", correct:"cow", options:["cow","pig","cat"]},
+{q:"Identify the pig", correct:"pig", options:["pig","sheep","monkey"]},
+{q:"Identify the giraffe", correct:"giraffe", options:["giraffe","lion","cat"]},
+{q:"Identify the monkey", correct:"monkey", options:["monkey","lion","giraffe"]},
+{q:"Identify the sheep", correct:"sheep", options:["sheep","giraffe","monkey"]},
+{q:"Identify the cat", correct:"cat", options:["cat","cow","lion"]}
+];
+
+let current=0, score=0, wrongAttempts=0;
+
+function shuffle(arr){ return arr.sort(()=>Math.random()-0.5); }
+
+/* 🔊 Voice */
+function speak(text){
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
+  speech.rate = 0.9;
+  speech.pitch = 1;
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
+}
+
+function loadQuestion(){
+  wrongAttempts=0;
+  let q=questions[current];
+
+  document.getElementById("question").innerText=q.q;
+  let optionsDiv=document.getElementById("options");
+  optionsDiv.innerHTML="";
+
+  shuffle([...q.options]).forEach(opt=>{
+    let div=document.createElement("div");
+    div.className="option";
+    div.dataset.value = opt;
+
+    div.innerHTML=`
+      <span class="correctMark">✔</span>
+      <span class="wrongMark">✖</span>
+      <img src="${basePath + opt}.png">
+      <p>${opt}</p>
+    `;
+
+    div.onclick=()=>checkAnswer(opt,div);
+    optionsDiv.appendChild(div);
+  });
+
+  speak(q.correct);
+}
+
+function checkAnswer(selected,el){
+  let correct=questions[current].correct;
+
+  speak(selected);
+
+  if(selected===correct){
+    el.querySelector(".correctMark").style.display="block";
+    playSound("correctSound");
+
+    setTimeout(()=> speak("Correct! " + correct), 300);
+
+    score++; 
+    current++;
+
+    setTimeout(()=>{
+      current<questions.length ? loadQuestion() : showScore();
+    },1000);
+
+  }else{
+    el.querySelector(".wrongMark").style.display="block";
+    playSound("wrongSound");
+
+    wrongAttempts++;
+    if(wrongAttempts>=2) showHint(correct);
+  }
+}
+
+function showHint(correct){
+  document.querySelectorAll(".option").forEach(o=>{
+    if(o.dataset.value === correct){
+      o.classList.add("hint");
+    }
+  });
+}
+
+function showScore(){
+  document.getElementById("game").style.display="none";
+
+  let s = document.getElementById("scoreScreen");
+  s.style.display="block";
+
+  document.getElementById("finalScore").innerHTML =
+    `🎉 Score: ${score}/${questions.length} <br><br>Great job!`;
+}
+
+function restartGame(){
+  current = 0;
+  score = 0;
+  wrongAttempts = 0;
+
+  window.speechSynthesis.cancel();
+
+  // shuffle questions for new game
+  questions.sort(()=>Math.random()-0.5);
+
+  document.getElementById("scoreScreen").style.display="none";
+  document.getElementById("game").style.display="block";
+
+  loadQuestion();
+}
+
+function playSound(id){
+  let a=document.getElementById(id);
+  a.currentTime=0;
+  a.play().catch(()=>{});
+}
+
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+  document.getElementById("game").style.display="block";
+  loadQuestion();
+},3000);
+</script>
+
+</body>
+</html>
