@@ -35,20 +35,14 @@ body, html {
     text-align: center;
     background-color: rgba(255,255,255,0.85);
     border-radius: 20px;
-    padding: 10px;
-
-    /* Doodle-style border */
-    border: 30px solid transparent;
-    border-image: url('assets/e1e3e2da-1ef6-42b3-a053-9aabc77248ba.png') 50 round;
-
-    /* Multiple decorative background images behind container */
-    background-image: 
-        url('assets/5b70aa1b-07bf-4969-a48d-2d0554171630.png'),
-        url('assets/d4507714-8209-4727-a396-9d5368216556.png'),
-        url('assets/99271513-f776-4857-b44a-5c1569097c78.png'),
-        url('assets/5782b21f-a39f-4910-9246-c15cd3d17d18.png');
-    background-size: cover;
-    background-blend-mode: lighten;
+    padding: 20px;
+    
+    /* Double-layered vibrant border */
+    box-sizing: border-box;
+    border: 15px solid #fff; /* inner border color for spacing */
+    box-shadow: 
+        0 0 0 15px #FFB6C1 inset,  /* inner pink layer */
+        0 0 0 30px #FFD700 inset;   /* outer gold layer */
 }
 
 .slide {
