@@ -7,7 +7,7 @@
 <style>
     @font-face {
         font-family: 'CustomFont';
-        src: url('assets/98ab80fc-ba3e-4970-a238-f3ad6cce0074.png'); /* replace with actual font file if .ttf/.woff available */
+        src: url('assets/98ab80fc-ba3e-4970-a238-f3ad6cce0074.png'); /* replace with .ttf/.woff if available */
     }
 
     body, html {
@@ -19,25 +19,28 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        background: url('assets/download.jpg') center/cover no-repeat;
         overflow: hidden;
-        animation: gradientMove 20s ease infinite;
-        background: linear-gradient(-45deg, #741353, #E9409B, #8B920A, #024F5B, #1CB6BB, #A0E5E5);
-        background-size: 1200% 1200%;
-    }
-
-    @keyframes gradientMove {
-        0%{background-position:0% 50%}
-        50%{background-position:100% 50%}
-        100%{background-position:0% 50%}
     }
 
     #game-container {
         width: 100%;
-        max-width: 500px;
-        height: 100%;
-        max-height: 900px;
+        max-width: 600px;
+        height: 90%;
+        max-height: 800px;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         text-align: center;
+        background-color: rgba(255,255,255,0.85);
+        border-radius: 20px;
+        padding: 10px;
+
+        /* Cute floral/brush border */
+        border: 30px solid transparent;
+        border-image: url('assets/floral-border.png') 50 round;
     }
 
     .slide {
@@ -49,40 +52,41 @@
         align-items: center;
     }
 
-    .slide img {
-        max-width: 80%;
-        height: auto;
-        margin-bottom: 20px;
+    #slide-1-content {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
     }
 
-    #instructions {
-        font-size: 1.5em;
-        margin-bottom: 15px;
-        color: #fff;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    #question-img {
+        width: 45%;
+        height: auto;
+        max-height: 400px;
     }
 
     .options {
         display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        margin-top: 10px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 45%;
     }
 
     .option-btn {
-        padding: 15px 20px;
+        padding: 20px 30px;
         font-size: 1.5em;
+        margin: 10px;
+        border-radius: 15px;
         border: none;
-        border-radius: 12px;
-        margin: 5px;
         cursor: pointer;
-        min-width: 80px;
+        background-color: #FFCCFF;
         transition: transform 0.2s, box-shadow 0.2s;
-        background-color: #ffffffcc;
     }
 
     .option-btn:hover {
-        box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
 
     .correct {
@@ -102,11 +106,16 @@
         100% { transform: rotate(0deg);}
     }
 
+    #instructions {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
     #feedback {
         font-size: 1.5em;
-        margin-top: 10px;
-        color: #fff;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        margin-top: 15px;
+        color: #333;
     }
 
     #play-again {
@@ -120,22 +129,26 @@
         color: #fff;
         cursor: pointer;
     }
-
 </style>
 </head>
 <body>
 <div id="game-container">
+    <!-- Slide 0: Logo -->
     <div class="slide" id="slide-0">
         <img src="assets/innovine-logo.png" alt="Innovine Logo">
     </div>
 
+    <!-- Slide 1: Questions -->
     <div class="slide" id="slide-1">
         <div id="instructions">Count the objects and tap on the correct number.</div>
-        <img id="question-img" src="" alt="Question">
-        <div class="options" id="options-container"></div>
+        <div id="slide-1-content">
+            <img id="question-img" src="" alt="Question">
+            <div class="options" id="options-container"></div>
+        </div>
         <div id="feedback"></div>
     </div>
 
+    <!-- Slide End -->
     <div class="slide" id="slide-end">
         <div id="feedback">🎉 Congratulations! 🎉</div>
         <button id="play-again">Play Again</button>
@@ -161,6 +174,7 @@ const clapAudio = document.getElementById('audio-clap');
 let currentSlide = 0;
 let attempts = 0;
 
+// Questions
 const questions = [
     {img: "assets/panda.png", answer: "11", options: ["11","12","13"]},
     {img: "assets/rocket.png", answer: "12", options: ["11","12","14"]},
@@ -238,7 +252,7 @@ function endGame(){
 
 playAgainBtn.addEventListener('click', () => { startGame(); });
 
-// Start with logo for 2 seconds
+// Show logo for 2 seconds first
 showSlide(0);
 setTimeout(() => { startGame(); }, 2000);
 </script>
