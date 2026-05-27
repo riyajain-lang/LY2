@@ -5,19 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preschool Counting Game</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+    @font-face {
+        font-family: 'CustomFont';
+        src: url('assets/98ab80fc-ba3e-4970-a238-f3ad6cce0074.png'); /* replace with actual font file if .ttf/.woff available */
+    }
 
     body, html {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
-        font-family: 'Comic Neue', cursive;
+        font-family: 'CustomFont', cursive;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #ffffff;
         overflow: hidden;
+        animation: gradientMove 20s ease infinite;
+        background: linear-gradient(-45deg, #741353, #E9409B, #8B920A, #024F5B, #1CB6BB, #A0E5E5);
+        background-size: 1200% 1200%;
+    }
+
+    @keyframes gradientMove {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
     }
 
     #game-container {
@@ -27,7 +38,6 @@
         max-height: 900px;
         position: relative;
         text-align: center;
-        background-color: #ffffff;
     }
 
     .slide {
@@ -43,6 +53,13 @@
         max-width: 80%;
         height: auto;
         margin-bottom: 20px;
+    }
+
+    #instructions {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 
     .options {
@@ -61,7 +78,7 @@
         cursor: pointer;
         min-width: 80px;
         transition: transform 0.2s, box-shadow 0.2s;
-        background-color: #E0E0E0;
+        background-color: #ffffffcc;
     }
 
     .option-btn:hover {
@@ -88,7 +105,8 @@
     #feedback {
         font-size: 1.5em;
         margin-top: 10px;
-        color: #333;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 
     #play-again {
@@ -103,32 +121,21 @@
         cursor: pointer;
     }
 
-    canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-    }
 </style>
 </head>
 <body>
-
 <div id="game-container">
-    <!-- Slide 1: Logo -->
     <div class="slide" id="slide-0">
         <img src="assets/innovine-logo.png" alt="Innovine Logo">
     </div>
 
-    <!-- Slides 2-9: Questions -->
     <div class="slide" id="slide-1">
-        <div id="question-img-container">
-            <img id="question-img" src="" alt="Question">
-        </div>
+        <div id="instructions">Count the objects and tap on the correct number.</div>
+        <img id="question-img" src="" alt="Question">
         <div class="options" id="options-container"></div>
         <div id="feedback"></div>
     </div>
 
-    <!-- Slide: End -->
     <div class="slide" id="slide-end">
         <div id="feedback">🎉 Congratulations! 🎉</div>
         <button id="play-again">Play Again</button>
@@ -154,7 +161,6 @@ const clapAudio = document.getElementById('audio-clap');
 let currentSlide = 0;
 let attempts = 0;
 
-// Question Bank
 const questions = [
     {img: "assets/panda.png", answer: "11", options: ["11","12","13"]},
     {img: "assets/rocket.png", answer: "12", options: ["11","12","14"]},
@@ -166,14 +172,10 @@ const questions = [
     {img: "assets/pen.png", answer: "13", options: ["11","13","12"]},
 ];
 
-// Shuffle questions for jumbled order
-function shuffleArray(array) {
-    return array.sort(() => Math.random() - 0.5);
-}
-
+function shuffleArray(array) { return array.sort(() => Math.random() - 0.5); }
 let shuffledQuestions = shuffleArray([...questions]);
 
-function showSlide(index) {
+function showSlide(index){
     slides.forEach(s => s.style.display = 'none');
     slides[index].style.display = 'flex';
 }
@@ -186,7 +188,6 @@ function startGame() {
     loadQuestion();
 }
 
-// Load Question
 function loadQuestion() {
     attempts = 0;
     feedbackEl.innerText = '';
@@ -205,55 +206,41 @@ function loadQuestion() {
 
 function checkAnswer(selected, btn) {
     const q = shuffledQuestions[currentSlide - 1];
-    if(selected === q.answer) {
+    if(selected === q.answer){
         btn.classList.add('correct');
         feedbackEl.innerText = 'Good Job!';
         correctAudio.play();
-        setTimeout(() => {
-            nextQuestion();
-        }, 1000);
+        setTimeout(() => nextQuestion(), 1000);
     } else {
         attempts++;
         btn.classList.add('wrong');
         wrongAudio.play();
         setTimeout(() => btn.classList.remove('wrong'), 300);
-        if(attempts >= 2) {
-            // Highlight correct option
-            const correctBtn = Array.from(optionsContainer.children).find(b => b.innerText === q.answer);
+        if(attempts>=2){
+            const correctBtn = Array.from(optionsContainer.children).find(b=>b.innerText===q.answer);
             correctBtn.classList.add('correct');
         }
     }
 }
 
-function nextQuestion() {
-    if(currentSlide < shuffledQuestions.length) {
+function nextQuestion(){
+    if(currentSlide < shuffledQuestions.length){
         currentSlide++;
         loadQuestion();
-    } else {
-        endGame();
-    }
+    } else { endGame(); }
 }
 
-function endGame() {
-    showSlide(slides.length - 1);
+function endGame(){
+    showSlide(slides.length-1);
     clapAudio.play();
-    confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 }
-    });
+    confetti({particleCount:150, spread:70, origin:{y:0.6}});
 }
 
-playAgainBtn.addEventListener('click', () => {
-    startGame();
-});
+playAgainBtn.addEventListener('click', () => { startGame(); });
 
 // Start with logo for 2 seconds
 showSlide(0);
-setTimeout(() => {
-    startGame();
-}, 2000);
-
+setTimeout(() => { startGame(); }, 2000);
 </script>
 </body>
 </html>
