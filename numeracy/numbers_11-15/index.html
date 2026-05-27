@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preschool Counting Game</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: 'Comic Neue', cursive;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+    #game-container {
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        max-height: 900px;
+        position: relative;
+        text-align: center;
+        background-color: #ffffff;
+    }
+
+    .slide {
+        display: none;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .slide img {
+        max-width: 80%;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .options {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .option-btn {
+        padding: 15px 20px;
+        font-size: 1.5em;
+        border: none;
+        border-radius: 12px;
+        margin: 5px;
+        cursor: pointer;
+        min-width: 80px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        background-color: #E0E0E0;
+    }
+
+    .option-btn:hover {
+        box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+    }
+
+    .correct {
+        background-color: #8BC34A !important;
+        color: #fff;
+    }
+
+    .wrong {
+        animation: wiggle 0.3s;
+    }
+
+    @keyframes wiggle {
+        0% { transform: rotate(0deg);}
+        25% { transform: rotate(5deg);}
+        50% { transform: rotate(-5deg);}
+        75% { transform: rotate(5deg);}
+        100% { transform: rotate(0deg);}
+    }
+
+    #feedback {
+        font-size: 1.5em;
+        margin-top: 10px;
+        color: #333;
+    }
+
+    #play-again {
+        display: none;
+        padding: 15px 25px;
+        font-size: 1.5em;
+        margin-top: 20px;
+        border: none;
+        border-radius: 12px;
+        background-color: #1CB6BB;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- Slide 1: Logo -->
+    <div class="slide" id="slide-0">
+        <img src="assets/innovine-logo.png" alt="Innovine Logo">
+    </div>
+
+    <!-- Slides 2-9: Questions -->
+    <div class="slide" id="slide-1">
+        <div id="question-img-container">
+            <img id="question-img" src="" alt="Question">
+        </div>
+        <div class="options" id="options-container"></div>
+        <div id="feedback"></div>
+    </div>
+
+    <!-- Slide: End -->
+    <div class="slide" id="slide-end">
+        <div id="feedback">🎉 Congratulations! 🎉</div>
+        <button id="play-again">Play Again</button>
+    </div>
+</div>
+
+<audio id="audio-correct" src="assets/correct.mp3"></audio>
+<audio id="audio-wrong" src="assets/wrong.mp3"></audio>
+<audio id="audio-clap" src="assets/freesound_community-claps-44774.mp3"></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+const slides = document.querySelectorAll('.slide');
+const questionImg = document.getElementById('question-img');
+const optionsContainer = document.getElementById('options-container');
+const feedbackEl = document.getElementById('feedback');
+const playAgainBtn = document.getElementById('play-again');
+
+const correctAudio = document.getElementById('audio-correct');
+const wrongAudio = document.getElementById('audio-wrong');
+const clapAudio = document.getElementById('audio-clap');
+
+let currentSlide = 0;
+let attempts = 0;
+
+// Question Bank
+const questions = [
+    {img: "assets/panda.png", answer: "11", options: ["11","12","13"]},
+    {img: "assets/rocket.png", answer: "12", options: ["11","12","14"]},
+    {img: "assets/lion.png", answer: "13", options: ["12","13","14"]},
+    {img: "assets/dragon.png", answer: "14", options: ["13","14","15"]},
+    {img: "assets/starfish.png", answer: "15", options: ["14","15","13"]},
+    {img: "assets/icecream.png", answer: "12", options: ["12","14","11"]},
+    {img: "assets/butterfly.png", answer: "14", options: ["14","15","13"]},
+    {img: "assets/pen.png", answer: "13", options: ["11","13","12"]},
+];
+
+// Shuffle questions for jumbled order
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+let shuffledQuestions = shuffleArray([...questions]);
+
+function showSlide(index) {
+    slides.forEach(s => s.style.display = 'none');
+    slides[index].style.display = 'flex';
+}
+
+function startGame() {
+    currentSlide = 1;
+    attempts = 0;
+    shuffledQuestions = shuffleArray([...questions]);
+    showSlide(currentSlide);
+    loadQuestion();
+}
+
+// Load Question
+function loadQuestion() {
+    attempts = 0;
+    feedbackEl.innerText = '';
+    const q = shuffledQuestions[currentSlide - 1];
+    questionImg.src = q.img;
+
+    optionsContainer.innerHTML = '';
+    q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.classList.add('option-btn');
+        btn.innerText = opt;
+        btn.addEventListener('click', () => checkAnswer(opt, btn));
+        optionsContainer.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected, btn) {
+    const q = shuffledQuestions[currentSlide - 1];
+    if(selected === q.answer) {
+        btn.classList.add('correct');
+        feedbackEl.innerText = 'Good Job!';
+        correctAudio.play();
+        setTimeout(() => {
+            nextQuestion();
+        }, 1000);
+    } else {
+        attempts++;
+        btn.classList.add('wrong');
+        wrongAudio.play();
+        setTimeout(() => btn.classList.remove('wrong'), 300);
+        if(attempts >= 2) {
+            // Highlight correct option
+            const correctBtn = Array.from(optionsContainer.children).find(b => b.innerText === q.answer);
+            correctBtn.classList.add('correct');
+        }
+    }
+}
+
+function nextQuestion() {
+    if(currentSlide < shuffledQuestions.length) {
+        currentSlide++;
+        loadQuestion();
+    } else {
+        endGame();
+    }
+}
+
+function endGame() {
+    showSlide(slides.length - 1);
+    clapAudio.play();
+    confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+    });
+}
+
+playAgainBtn.addEventListener('click', () => {
+    startGame();
+});
+
+// Start with logo for 2 seconds
+showSlide(0);
+setTimeout(() => {
+    startGame();
+}, 2000);
+
+</script>
+</body>
+</html>
