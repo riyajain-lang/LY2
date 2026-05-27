@@ -7,7 +7,7 @@
 <style>
 @font-face {
     font-family: 'CustomFont';
-    src: url('assets/98ab80fc-ba3e-4970-a238-f3ad6cce0074.png'); /* replace with .ttf/.woff if available */
+    src: url('assets/98ab80fc-ba2a-4970-a238-f3ad6cce0074.png'); /* replace with actual font file if .ttf/.woff */
 }
 
 body, html {
@@ -19,7 +19,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('assets/d03f39cb-e2a9-4dec-91f5-05ee27c6916b.png') center/cover no-repeat;
+    background: #f0f0f0;
     overflow: hidden;
 }
 
@@ -28,28 +28,17 @@ body, html {
     max-width: 700px;
     height: 90%;
     max-height: 800px;
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     text-align: center;
-    background-color: rgba(255,255,255,0.85);
     border-radius: 20px;
     padding: 10px;
 
-    /* Cute floral/brush border */
+    /* Doodle-style border */
     border: 30px solid transparent;
-    border-image: url('assets/floral-border.png') 50 round;
-
-    /* Multiple background images behind container */
-    background-image: 
-        url('assets/5b70aa1b-07bf-4969-a48d-2d0554171630.png'),
-        url('assets/d4507714-8209-4727-a396-9d5368216556.png'),
-        url('assets/99271513-f776-4857-b44a-5c1569097c78.png'),
-        url('assets/5782b21f-a39f-4910-9246-c15cd3d17d18.png');
-    background-size: cover;
-    background-blend-mode: lighten;
+    border-image: url('assets/e1e3e2da-1ef6-42b3-a053-9aabc77248ba.png') 50 round;
 }
 
 .slide {
@@ -67,7 +56,7 @@ body, html {
     color: #000;
     margin-bottom: 15px;
     padding: 10px 20px;
-    border: 4px solid #008000; /* green box around instructions */
+    border: 4px solid #008000;
     border-radius: 12px;
     background-color: #e0ffe0;
 }
@@ -78,12 +67,15 @@ body, html {
     width: 100%;
     align-items: center;
     flex-grow: 1;
+    padding: 10px;
+    background: linear-gradient(135deg, #fef6e4, #d0f0c0);
+    border-radius: 15px;
 }
 
 #question-img {
     width: 55%;
     height: auto;
-    max-height: 500px; /* enlarged for better visibility */
+    max-height: 500px;
     margin-left: 10px;
 }
 
@@ -148,11 +140,14 @@ body, html {
 </style>
 </head>
 <body>
+
 <div id="game-container">
-    <div class="slide" id="slide-0">
+    <!-- Slide 0: Logo White -->
+    <div class="slide" id="slide-0" style="background:white;">
         <img src="assets/innovine-logo.png" alt="Innovine Logo">
     </div>
 
+    <!-- Slide 1+: Questions with colored background -->
     <div class="slide" id="slide-1">
         <div id="instructions">Count the objects and tap on the correct number.</div>
         <div id="slide-1-content">
@@ -162,6 +157,7 @@ body, html {
         <div id="feedback"></div>
     </div>
 
+    <!-- Slide End -->
     <div class="slide" id="slide-end">
         <div id="feedback">🎉 Congratulations! 🎉</div>
         <button id="play-again">Play Again</button>
@@ -264,7 +260,7 @@ function endGame(){
 
 playAgainBtn.addEventListener('click', () => { startGame(); });
 
-// Show logo for 2 seconds first
+// Show first slide white logo for 2 seconds
 showSlide(0);
 setTimeout(() => { startGame(); }, 2000);
 </script>
