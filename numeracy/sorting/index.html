@@ -45,7 +45,9 @@ body { margin:0; padding:0; font-family:'Comic Sans MS', sans-serif; overflow:hi
 </head>
 <body>
 
-<div id="splash"><img src="assets/innovine-logo.png" alt="Innovine Logo"></div>
+<div id="splash">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+</div>
 
 <div id="game">
   <div id="instructionBox">Drag each object into the correct colour bucket!</div>
@@ -66,10 +68,10 @@ body { margin:0; padding:0; font-family:'Comic Sans MS', sans-serif; overflow:hi
 <audio id="correctSound" src="assets/correct.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
 <audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-// All game objects
+// Full object array
 const objectsData = [
     {name:'red1', color:'red', image:'assets/red1.png'},
     {name:'red2', color:'red', image:'assets/red2.png'},
@@ -87,7 +89,6 @@ const objectsData = [
     {name:'blue4', color:'blue', image:'assets/blue4.png'},
     {name:'blue5', color:'blue', image:'assets/blue5.png'}
 ];
-
 
 let attempts = {};
 
