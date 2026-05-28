@@ -22,9 +22,9 @@
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Prevents scrolling completely */
+            overflow: hidden; /* Strictly blocks scrolling */
             font-family: 'Arbutus', serif;
-            background-color: #B0E0E6; /* Powder Blue default */
+            background-color: #B0E0E6; /* Powder Blue */
             color: #3E2723; /* Dark Cocoa */
         }
 
@@ -46,7 +46,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #FFFFFF; /* Plain white background */
+            background-color: #FFFFFF;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -54,7 +54,7 @@
         }
 
         #logo-slide img {
-            width: 50%; /* 50% of the screen width */
+            width: 50%;
             max-height: 80%;
             object-fit: contain;
         }
@@ -65,17 +65,17 @@
             width: 100%;
             height: 100%;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
-            padding: 20px 10px;
+            padding: 2vh 5vw;
         }
 
         #instruction-text {
-            font-size: calc(1.2rem + 1vw);
+            font-size: calc(1.1rem + 1vw);
             text-align: center;
             color: #3E2723;
-            margin-bottom: 10px;
-            min-height: 3em;
+            margin-bottom: 5px;
+            min-height: 2.5em;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,57 +87,48 @@
             justify-content: space-around;
             align-items: center;
             flex-grow: 1;
-            max-height: 60%;
+            max-height: 65%;
         }
 
         .option-card {
-            width: 45%; /* Covers ~45% of the screen width */
-            height: auto;
+            width: 35%; /* Controls each object area to cover exactly ~35% of screen width */
+            height: 100%;
+            max-height: 40vh; /* Limits vertical space to guarantee layout fits on short devices */
             aspect-ratio: 1 / 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             position: relative;
             cursor: pointer;
-            border-radius: 20px;
+            border-radius: 50%; /* Rounded base for the glowing ring effect */
+            background-repeat: no-repeat;
+            background-size: 200% 100%; /* Zooms to isolate a single character side */
             transition: transform 0.1s ease;
         }
 
-        .option-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
         /* --- EFFECTS & ANIMATIONS --- */
-        /* Glowing ring covering the object precisely */
+        /* Ring fits perfectly around the centered isolated animal */
         .glowing-ring {
-            box-shadow: 0 0 25px 15px #FFD700, inset 0 0 20px 10px #FFD700;
-            border-radius: 50%;
+            box-shadow: 0 0 20px 12px #FFD700, inset 0 0 15px 8px #FFD700;
             animation: pulse-glow 1.5s infinite;
         }
 
         @keyframes pulse-glow {
             0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.03); opacity: 1; }
+            50% { transform: scale(1.04); opacity: 1; }
             100% { transform: scale(1); opacity: 0.9; }
         }
 
-        /* Jiggle/Wobble Animation for wrong choices */
         .jiggle {
             animation: jiggle-anim 0.4s ease-in-out;
         }
 
         @keyframes jiggle-anim {
             0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
         }
 
-        /* Feedback Elements */
         #feedback-overlay {
             position: absolute;
-            font-size: calc(3rem + 2vw);
+            font-size: calc(3rem + 3vw);
             font-weight: bold;
             display: none;
             z-index: 5;
@@ -156,22 +147,21 @@
         }
 
         #end-slide h1 {
-            font-size: calc(2.5rem + 2vw);
-            margin-bottom: 30px;
+            font-size: calc(2.2rem + 2vw);
+            margin-bottom: 25px;
             color: #3E2723;
         }
 
         #play-again-btn {
             font-family: 'Arbutus', serif;
-            font-size: calc(1rem + 1vw);
-            padding: 15px 35px;
+            font-size: calc(0.9rem + 1vw);
+            padding: 12px 30px;
             background-color: #3E2723;
             color: #FFFFFF;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
 
         #play-again-btn:active {
@@ -209,14 +199,13 @@
     <audio id="snd-cheer" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
 
     <script>
-        // Full Pool dataset mapping out rules, images, prompts and unique target definitions
         const questionPool = [
-            { id: "elephant_butterfly", file: "assets/elephant&butterfly.png", target: "elephant", mode: "big", text: "Tap on the object which is big." },
-            { id: "blue_purple_daino", file: "assets/bluedaino&purpledaino.png", target: "blue-daino", mode: "big", text: "Tap on the object which is big." },
-            { id: "watermelon_apple", file: "assets/watermellon&apple.png", target: "watermellon", mode: "big", text: "Tap on the object which is big." },
-            { id: "giraffe_turtle", file: "assets/giraffe&turtle.png", target: "turtle", mode: "small", text: "Tap on the object which is small." },
-            { id: "color_white_ball", file: "assets/colourball&whiteball.png", target: "whiteball", mode: "small", text: "Tap on the object which is small." },
-            { id: "truck_car", file: "assets/truck&car.png", target: "car", mode: "small", text: "Tap on the object which is small." }
+            { id: "elephant_butterfly", file: "assets/elephant&butterfly.png", target: "left", text: "Tap on the object which is big." },
+            { id: "blue_purple_daino", file: "assets/bluedaino&purpledaino.png", target: "left", text: "Tap on the object which is big." },
+            { id: "watermelon_apple", file: "assets/watermellon&apple.png", target: "left", text: "Tap on the object which is big." },
+            { id: "giraffe_turtle", file: "assets/giraffe&turtle.png", target: "right", text: "Tap on the object which is small." },
+            { id: "color_white_ball", file: "assets/colourball&whiteball.png", target: "right", text: "Tap on the object which is small." },
+            { id: "truck_car", file: "assets/truck&car.png", target: "right", text: "Tap on the object which is small." }
         ];
 
         let activeQuestions = [];
@@ -224,20 +213,17 @@
         let wrongAttemptsCount = 0;
         let inputBlock = false;
 
-        // TTS / Speech Synthesis Web API Backup setup for preschool text read-aloud features
         function playAudioInstruction(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const speech = new SpeechSynthesisUtterance(text);
                 speech.lang = 'en-US';
-                speech.rate = 0.85; // slightly slower pacing optimal for age 4 kids
+                speech.rate = 0.85; 
                 window.speechSynthesis.speak(speech);
             }
         }
 
-        // Initialize App Sequencing
         window.addEventListener('DOMContentLoaded', () => {
-            // Screen 1 Layout timeout sequence
             setTimeout(() => {
                 document.getElementById('logo-slide').style.display = 'none';
                 document.getElementById('game-slide').style.display = 'flex';
@@ -246,18 +232,17 @@
         });
 
         function setupGameSession() {
-            // Generate a jumbled/randomized list of questions (8 items total)
             activeQuestions = [];
             let temporaryPool = [...questionPool];
             
-            // Shuffle original array
+            // Jumble array
             temporaryPool.sort(() => Math.random() - 0.5);
             
-            // Build 8 questions total out of existing pool instances safely
+            // Fill up exactly 8 questions
             while(activeQuestions.length < 8) {
                 activeQuestions.push(...temporaryPool);
             }
-            activeQuestions = activeQuestions.slice(0, 8); // Lock configuration exactly to 8 slides
+            activeQuestions = activeQuestions.slice(0, 8);
 
             currentQuestionIndex = 0;
             loadQuestionCard();
@@ -269,45 +254,54 @@
 
             const currentData = activeQuestions[currentQuestionIndex];
             
-            // Display clean instructional content
             document.getElementById('instruction-text').textContent = currentData.text;
             playAudioInstruction(currentData.text);
 
             const leftBox = document.getElementById('left-option');
             const rightBox = document.getElementById('right-option');
 
-            // Wipe out prior design statuses smoothly
             leftBox.className = "option-card";
             rightBox.className = "option-card";
             
-            // Balance visual side alignments randomly to keep choice interactions valid
-            const assignLeftIsTarget = Math.random() >= 0.5;
+            // Randomly swap sides dynamically so the correct answer is not always on the same side
+            const swapSides = Math.random() >= 0.5;
+            const leftIsCorrect = swapSides ? (currentData.target === "right") : (currentData.target === "left");
 
-            // Generate clean isolated sub-images styled safely using CSS Background Mask styling
-            leftBox.innerHTML = `<img src="${currentData.file}" style="clip-path: inset(0 50% 0 0); transform: scale(2) translateX(25%);" data-role="${assignLeftIsTarget ? 'target' : 'bait'}">`;
-            rightBox.innerHTML = `<img src="${currentData.file}" style="clip-path: inset(0 0 0 50%); transform: scale(2) translateX(-25%);" data-role="${!assignLeftIsTarget ? 'target' : 'bait'}">`;
+            // Assign assets paths as background images
+            leftBox.style.backgroundImage = `url('${currentData.file}')`;
+            rightBox.style.backgroundImage = `url('${currentData.file}')`;
+
+            // Position settings isolate left and right characters safely without shifting/clipping artifacts
+            if (!swapSides) {
+                leftBox.style.backgroundPosition = "0% center";   // Shows Left Item
+                rightBox.style.backgroundPosition = "100% center"; // Shows Right Item
+                leftBox.setAttribute('data-correct', leftIsCorrect ? 'true' : 'false');
+                rightBox.setAttribute('data-correct', !leftIsCorrect ? 'true' : 'false');
+            } else {
+                leftBox.style.backgroundPosition = "100% center"; // Shows Right Item
+                rightBox.style.backgroundPosition = "0% center";   // Shows Left Item
+                leftBox.setAttribute('data-correct', leftIsCorrect ? 'true' : 'false');
+                rightBox.setAttribute('data-correct', !leftIsCorrect ? 'true' : 'false');
+            }
         }
 
         function checkAnswer(chosenSide) {
             if (inputBlock) return;
 
             const selectedElement = document.getElementById(`${chosenSide}-option`);
-            const nestedImg = selectedElement.querySelector('img');
-            const role = nestedImg.getAttribute('data-role');
+            const isCorrect = selectedElement.getAttribute('data-correct') === 'true';
 
-            if (role === 'target') {
-                // Correct Choice Behavior
+            if (isCorrect) {
                 inputBlock = true;
                 document.getElementById('snd-correct').play().catch(e => {});
                 
                 selectedElement.classList.add('glowing-ring');
-                showVisualFeedback("✔️");
+                showVisualFeedback("👍");
                 
                 setTimeout(() => {
                     advanceGame();
-                }, 1800);
+                }, 1500);
             } else {
-                // Incorrect Choice Behavior
                 wrongAttemptsCount++;
                 document.getElementById('snd-wrong').play().catch(e => {});
                 
@@ -316,20 +310,19 @@
                     selectedElement.classList.remove('jiggle');
                 }, 400);
 
-                // Check out the 2-Strike penalty threshold parameters
                 if (wrongAttemptsCount >= 2) {
                     inputBlock = true;
-                    // Auto-Highlight Target Object
+                    // Auto reveal answer by applying the glowing ring around it
                     const cards = [document.getElementById('left-option'), document.getElementById('right-option')];
                     cards.forEach(card => {
-                        if(card.querySelector('img').getAttribute('data-role') === 'target') {
+                        if(card.getAttribute('data-correct') === 'true') {
                             card.classList.add('glowing-ring');
                         }
                     });
 
                     setTimeout(() => {
                         advanceGame();
-                    }, 2500);
+                    }, 2200);
                 }
             }
         }
@@ -337,12 +330,11 @@
         function showVisualFeedback(symbol) {
             const feedback = document.getElementById('feedback-overlay');
             feedback.textContent = symbol;
-            feedback.style.color = "#4CAF50"; 
             feedback.style.display = 'block';
             
             setTimeout(() => {
                 feedback.style.display = 'none';
-            }, 1200);
+            }, 1000);
         }
 
         function advanceGame() {
@@ -350,37 +342,20 @@
             if (currentQuestionIndex < activeQuestions.length) {
                 loadQuestionCard();
             } else {
-                // Terminate and open end configurations dashboard
                 document.getElementById('game-slide').style.display = 'none';
                 document.getElementById('end-slide').style.display = 'flex';
                 
-                // Play final sounds
                 document.getElementById('snd-cheer').play().catch(e => {});
-                
-                // Fire off full screen performance optimized confetti particles 
                 triggerConfettiBurst();
             }
         }
 
         function triggerConfettiBurst() {
-            const end = Date.now() + (3 * 1000); // 3 seconds continuous duration
+            const end = Date.now() + 3000;
             (function frame() {
-                confetti({
-                    particleCount: 3,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0, y: 0.8 }
-                });
-                confetti({
-                    particleCount: 3,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1, y: 0.8 }
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.85 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.85 } });
+                if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
 
