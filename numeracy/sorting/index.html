@@ -11,7 +11,6 @@ body {
     font-family: 'Comic Sans MS', sans-serif;
     overflow: hidden;
 }
-/* Splash Slide */
 #splash {
     width: 100%;
     height: 100vh;
@@ -22,7 +21,6 @@ body {
 }
 #splash img { width: 200px; height: auto; }
 
-/* Game Area */
 #game {
     display: none;
     flex-direction: column;
@@ -80,6 +78,7 @@ body {
     background: url('data:image/svg+xml;utf8,<svg fill="%2332cd32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.285 6.708l-11.314 11.313-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"/></svg>') no-repeat center;
     display: none;
 }
+
 #buckets {
     display: flex;
     justify-content: space-around;
@@ -102,7 +101,6 @@ body {
 .bucket.blue { background-color: #4D79FF; }
 .bucket.glow { box-shadow: 0 0 20px 5px #32cd32; }
 
-/* End Screen */
 #end {
     display: none;
     width: 100%;
@@ -136,12 +134,10 @@ body {
 </head>
 <body>
 
-<!-- Splash -->
 <div id="splash">
     <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
-<!-- Game -->
 <div id="game">
     <div id="instructionBox">Drag each object into the correct colour bucket!</div>
     <div id="objects"></div>
@@ -152,36 +148,22 @@ body {
     </div>
 </div>
 
-<!-- End Screen -->
 <div id="end">
     <canvas id="confettiCanvas"></canvas>
-    <h1>Well done!</h1>
+    <h1>Good Job!</h1>
     <button onclick="restartGame()">Play Again</button>
 </div>
 
 <audio id="correctSound" src="assets/correct.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
 <audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
-
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-// Objects
 const objectsData = [
+    {name:'cheese', color:'yellow', image:'assets/9ec80f19-c81e-49ce-ad31-97ad3945bae2.png'},
     {name:'red1', color:'red', image:'assets/red1.png'},
-    {name:'red2', color:'red', image:'assets/red2.png'},
-    {name:'red3', color:'red', image:'assets/red3.png'},
-    {name:'red4', color:'red', image:'assets/red4.png'},
-    {name:'red5', color:'red', image:'assets/red5.png'},
     {name:'yellow1', color:'yellow', image:'assets/yellow1.png'},
-    {name:'yellow2', color:'yellow', image:'assets/yellow2.png'},
-    {name:'yellow3', color:'yellow', image:'assets/yellow3.png'},
-    {name:'yellow4', color:'yellow', image:'assets/yellow4.png'},
-    {name:'yellow5', color:'yellow', image:'assets/yellow5.png'},
-    {name:'blue1', color:'blue', image:'assets/blue1.png'},
-    {name:'blue2', color:'blue', image:'assets/blue2.png'},
-    {name:'blue3', color:'blue', image:'assets/blue3.png'},
-    {name:'blue4', color:'blue', image:'assets/blue4.png'},
-    {name:'blue5', color:'blue', image:'assets/blue5.png'}
+    {name:'blue1', color:'blue', image:'assets/blue1.png'}
 ];
 
 let attempts = {};
@@ -289,6 +271,5 @@ function restartGame(){
 
 showSplash();
 </script>
-
 </body>
 </html>
