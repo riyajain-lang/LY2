@@ -20,10 +20,7 @@ body {
     justify-content: center;
     background: #fff;
 }
-#splash img {
-    width: 200px;
-    height: auto;
-}
+#splash img { width: 200px; height: auto; }
 
 /* Game Area */
 #game {
@@ -34,8 +31,6 @@ body {
     height: 100vh;
     background: linear-gradient(to bottom right, #CDBC50, #F9E5E7, #FDB7B7, #F34B5C, #FCE478, #F9B826);
 }
-
-/* Instruction Box Above Game */
 #instructionBox {
     background: rgba(255, 255, 255, 0.9);
     border: 3px solid #F34B5C;
@@ -45,8 +40,6 @@ body {
     font-size: 1.5rem;
     margin-bottom: 30px;
 }
-
-/* Objects */
 #objects {
     display: flex;
     flex-wrap: wrap;
@@ -87,8 +80,6 @@ body {
     background: url('data:image/svg+xml;utf8,<svg fill="%2332cd32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.285 6.708l-11.314 11.313-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"/></svg>') no-repeat center;
     display: none;
 }
-
-/* Buckets */
 #buckets {
     display: flex;
     justify-content: space-around;
@@ -120,8 +111,9 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
-#end h1 { color: #32cd32; font-size: 3rem; }
+#end h1 { color: #32cd32; font-size: 3rem; z-index:1; position: relative; }
 #end button {
     margin-top: 20px;
     padding: 10px 20px;
@@ -130,6 +122,15 @@ body {
     border: none;
     border-radius: 10px;
     cursor: pointer;
+    z-index:1;
+    position: relative;
+}
+#confettiCanvas {
+    position: absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    z-index:0;
 }
 </style>
 </head>
@@ -153,6 +154,7 @@ body {
 
 <!-- End Screen -->
 <div id="end">
+    <canvas id="confettiCanvas"></canvas>
     <h1>Well done!</h1>
     <button onclick="restartGame()">Play Again</button>
 </div>
@@ -161,7 +163,9 @@ body {
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
 <audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
+// Objects
 const objectsData = [
     {name:'red1', color:'red', image:'assets/red1.png'},
     {name:'red2', color:'red', image:'assets/red2.png'},
@@ -181,6 +185,7 @@ const objectsData = [
 ];
 
 let attempts = {};
+
 function showSplash() {
     document.getElementById('splash').style.display='flex';
     setTimeout(()=>{
@@ -194,7 +199,6 @@ function loadObjects() {
     const container = document.getElementById('objects');
     container.innerHTML='';
     attempts={};
-
     const shuffled = objectsData.sort(()=>0.5-Math.random());
 
     shuffled.forEach(obj=>{
@@ -257,11 +261,22 @@ function dropObject(e){
     draggedEl.classList.remove('dragging');
 }
 
+function showConfetti(){
+    const duration = 3000;
+    const end = Date.now() + duration;
+    (function frame() {
+        confetti({particleCount:4,angle:60,spread:55,origin:{x:0}});
+        confetti({particleCount:4,angle:120,spread:55,origin:{x:1}});
+        if(Date.now()<end){ requestAnimationFrame(frame); }
+    }());
+}
+
 function checkEnd(){
     if(document.querySelectorAll('.object').length===0){
         document.getElementById('game').style.display='none';
         document.getElementById('end').style.display='flex';
         document.getElementById('clapSound').play();
+        showConfetti();
     }
 }
 
