@@ -22,10 +22,10 @@
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Strictly blocks scrolling */
+            overflow: hidden; /* Guaranteed no scrolling on old or new mobile frames */
             font-family: 'Arbutus', serif;
-            background-color: #B0E0E6; /* Powder Blue */
-            color: #3E2723; /* Dark Cocoa */
+            background-color: #B0E0E6; /* Powder Blue Background */
+            color: #3E2723; /* Dark Cocoa Writeup */
         }
 
         #game-container {
@@ -67,11 +67,11 @@
             flex-direction: column;
             justify-content: space-around;
             align-items: center;
-            padding: 2vh 5vw;
+            padding: 3vh 2vw;
         }
 
         #instruction-text {
-            font-size: calc(1.1rem + 1vw);
+            font-size: calc(1.2rem + 1vw);
             text-align: center;
             color: #3E2723;
             margin-bottom: 5px;
@@ -87,26 +87,26 @@
             justify-content: space-around;
             align-items: center;
             flex-grow: 1;
-            max-height: 65%;
+            max-height: 60%;
         }
 
         .option-card {
-            width: 35%; /* Controls each object area to cover exactly ~35% of screen width */
+            width: 35%; /* Set to cover exactly 35% of the screen width */
             height: 100%;
-            max-height: 40vh; /* Limits vertical space to guarantee layout fits on short devices */
+            max-height: 38vh; /* Fixed threshold parameters to block scrollbars */
             aspect-ratio: 1 / 1;
             position: relative;
             cursor: pointer;
-            border-radius: 50%; /* Rounded base for the glowing ring effect */
+            border-radius: 50%;
             background-repeat: no-repeat;
-            background-size: 200% 100%; /* Zooms to isolate a single character side */
+            /* Using a slightly tighter zoom factor to safely eliminate image boundary bleeding */
+            background-size: 210% 100%; 
             transition: transform 0.1s ease;
         }
 
-        /* --- EFFECTS & ANIMATIONS --- */
-        /* Ring fits perfectly around the centered isolated animal */
+        /* --- GLOW AND INTERACTION EFFECTS --- */
         .glowing-ring {
-            box-shadow: 0 0 20px 12px #FFD700, inset 0 0 15px 8px #FFD700;
+            box-shadow: 0 0 20px 14px #FFD700, inset 0 0 15px 8px #FFD700;
             animation: pulse-glow 1.5s infinite;
         }
 
@@ -128,7 +128,7 @@
 
         #feedback-overlay {
             position: absolute;
-            font-size: calc(3rem + 3vw);
+            font-size: calc(3.5rem + 3vw);
             font-weight: bold;
             display: none;
             z-index: 5;
@@ -147,15 +147,15 @@
         }
 
         #end-slide h1 {
-            font-size: calc(2.2rem + 2vw);
+            font-size: calc(2.4rem + 2vw);
             margin-bottom: 25px;
             color: #3E2723;
         }
 
         #play-again-btn {
             font-family: 'Arbutus', serif;
-            font-size: calc(0.9rem + 1vw);
-            padding: 12px 30px;
+            font-size: calc(1rem + 1vw);
+            padding: 12px 32px;
             background-color: #3E2723;
             color: #FFFFFF;
             border: none;
@@ -165,7 +165,7 @@
         }
 
         #play-again-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
     </style>
 </head>
@@ -199,13 +199,14 @@
     <audio id="snd-cheer" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
 
     <script>
+        // Exact tailored offset maps isolating characters clean from artifacts
         const questionPool = [
-            { id: "elephant_butterfly", file: "assets/elephant&butterfly.png", target: "left", text: "Tap on the object which is big." },
-            { id: "blue_purple_daino", file: "assets/bluedaino&purpledaino.png", target: "left", text: "Tap on the object which is big." },
-            { id: "watermelon_apple", file: "assets/watermellon&apple.png", target: "left", text: "Tap on the object which is big." },
-            { id: "giraffe_turtle", file: "assets/giraffe&turtle.png", target: "right", text: "Tap on the object which is small." },
-            { id: "color_white_ball", file: "assets/colourball&whiteball.png", target: "right", text: "Tap on the object which is small." },
-            { id: "truck_car", file: "assets/truck&car.png", target: "right", text: "Tap on the object which is small." }
+            { id: "elephant_butterfly", file: "assets/elephant&butterfly.png", target: "left", text: "Tap on the object which is big.", leftPos: "-5%", rightPos: "103%" },
+            { id: "blue_purple_daino", file: "assets/bluedaino&purpledaino.png", target: "left", text: "Tap on the object which is big.", leftPos: "-2%", rightPos: "102%" },
+            { id: "watermelon_apple", file: "assets/watermellon&apple.png", target: "left", text: "Tap on the object which is big.", leftPos: "-5%", rightPos: "105%" },
+            { id: "giraffe_turtle", file: "assets/giraffe&turtle.png", target: "right", text: "Tap on the object which is small.", leftPos: "-5%", rightPos: "105%" },
+            { id: "color_white_ball", file: "assets/colourball&whiteball.png", target: "right", text: "Tap on the object which is small.", leftPos: "-3%", rightPos: "103%" },
+            { id: "truck_car", file: "assets/truck&car.png", target: "right", text: "Tap on the object which is small.", leftPos: "-2%", rightPos: "102%" }
         ];
 
         let activeQuestions = [];
@@ -232,17 +233,10 @@
         });
 
         function setupGameSession() {
-            activeQuestions = [];
-            let temporaryPool = [...questionPool];
-            
-            // Jumble array
-            temporaryPool.sort(() => Math.random() - 0.5);
-            
-            // Fill up exactly 8 questions
-            while(activeQuestions.length < 8) {
-                activeQuestions.push(...temporaryPool);
-            }
-            activeQuestions = activeQuestions.slice(0, 8);
+            // Shuffle and clamp configuration array precisely to 6 questions total
+            activeQuestions = [...questionPool];
+            activeQuestions.sort(() => Math.random() - 0.5);
+            activeQuestions = activeQuestions.slice(0, 6); 
 
             currentQuestionIndex = 0;
             loadQuestionCard();
@@ -263,23 +257,22 @@
             leftBox.className = "option-card";
             rightBox.className = "option-card";
             
-            // Randomly swap sides dynamically so the correct answer is not always on the same side
+            // Randomly swap positions so the answers keep jumbling naturally
             const swapSides = Math.random() >= 0.5;
             const leftIsCorrect = swapSides ? (currentData.target === "right") : (currentData.target === "left");
 
-            // Assign assets paths as background images
             leftBox.style.backgroundImage = `url('${currentData.file}')`;
             rightBox.style.backgroundImage = `url('${currentData.file}')`;
 
-            // Position settings isolate left and right characters safely without shifting/clipping artifacts
+            // Apply fine-tuned position mappings dynamically to hide label lines and neighboring artwork
             if (!swapSides) {
-                leftBox.style.backgroundPosition = "0% center";   // Shows Left Item
-                rightBox.style.backgroundPosition = "100% center"; // Shows Right Item
+                leftBox.style.backgroundPosition = `${currentData.leftPos} center`;
+                rightBox.style.backgroundPosition = `${currentData.rightPos} center`;
                 leftBox.setAttribute('data-correct', leftIsCorrect ? 'true' : 'false');
                 rightBox.setAttribute('data-correct', !leftIsCorrect ? 'true' : 'false');
             } else {
-                leftBox.style.backgroundPosition = "100% center"; // Shows Right Item
-                rightBox.style.backgroundPosition = "0% center";   // Shows Left Item
+                leftBox.style.backgroundPosition = `${currentData.rightPos} center`;
+                rightBox.style.backgroundPosition = `${currentData.leftPos} center`;
                 leftBox.setAttribute('data-correct', leftIsCorrect ? 'true' : 'false');
                 rightBox.setAttribute('data-correct', !leftIsCorrect ? 'true' : 'false');
             }
@@ -296,7 +289,7 @@
                 document.getElementById('snd-correct').play().catch(e => {});
                 
                 selectedElement.classList.add('glowing-ring');
-                showVisualFeedback("👍");
+                showVisualFeedback("✔️");
                 
                 setTimeout(() => {
                     advanceGame();
@@ -312,7 +305,7 @@
 
                 if (wrongAttemptsCount >= 2) {
                     inputBlock = true;
-                    // Auto reveal answer by applying the glowing ring around it
+                    // Auto reveal correct option glow ring 
                     const cards = [document.getElementById('left-option'), document.getElementById('right-option')];
                     cards.forEach(card => {
                         if(card.getAttribute('data-correct') === 'true') {
@@ -330,6 +323,7 @@
         function showVisualFeedback(symbol) {
             const feedback = document.getElementById('feedback-overlay');
             feedback.textContent = symbol;
+            feedback.style.color = "#4CAF50";
             feedback.style.display = 'block';
             
             setTimeout(() => {
@@ -342,6 +336,7 @@
             if (currentQuestionIndex < activeQuestions.length) {
                 loadQuestionCard();
             } else {
+                // Game complete slide switch
                 document.getElementById('game-slide').style.display = 'none';
                 document.getElementById('end-slide').style.display = 'flex';
                 
