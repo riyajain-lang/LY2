@@ -11,6 +11,8 @@ body {
     font-family: 'Comic Sans MS', sans-serif;
     overflow: hidden;
 }
+
+/* Splash Screen */
 #splash {
     width: 100%;
     height: 100vh;
@@ -21,6 +23,7 @@ body {
 }
 #splash img { width: 200px; height: auto; }
 
+/* Game */
 #game {
     display: none;
     flex-direction: column;
@@ -29,8 +32,10 @@ body {
     height: 100vh;
     background: linear-gradient(to bottom right, #CDBC50, #F9E5E7, #FDB7B7, #F34B5C, #FCE478, #F9B826);
 }
+
+/* Instruction Box */
 #instructionBox {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255,255,255,0.9);
     border: 3px solid #F34B5C;
     border-radius: 15px;
     padding: 15px 20px;
@@ -38,6 +43,8 @@ body {
     font-size: 1.5rem;
     margin-bottom: 30px;
 }
+
+/* Objects */
 #objects {
     display: flex;
     flex-wrap: wrap;
@@ -79,6 +86,7 @@ body {
     display: none;
 }
 
+/* Buckets */
 #buckets {
     display: flex;
     justify-content: space-around;
@@ -97,10 +105,11 @@ body {
     position: relative;
 }
 .bucket.red { background-color: #FF4D4D; }
-.bucket.yellow { background-color: #FFEB3B; color: #000; }
+.bucket.yellow { background-color: #FFEB3B; color:#000; }
 .bucket.blue { background-color: #4D79FF; }
 .bucket.glow { box-shadow: 0 0 20px 5px #32cd32; }
 
+/* End Slide */
 #end {
     display: none;
     width: 100%;
@@ -111,7 +120,12 @@ body {
     align-items: center;
     position: relative;
 }
-#end h1 { color: #32cd32; font-size: 3rem; z-index:1; position: relative; }
+#end h1 {
+    color: #32cd32;
+    font-size: 3rem;
+    z-index:1;
+    position: relative;
+}
 #end button {
     margin-top: 20px;
     padding: 10px 20px;
@@ -134,10 +148,12 @@ body {
 </head>
 <body>
 
+<!-- Splash -->
 <div id="splash">
     <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
+<!-- Game -->
 <div id="game">
     <div id="instructionBox">Drag each object into the correct colour bucket!</div>
     <div id="objects"></div>
@@ -148,45 +164,58 @@ body {
     </div>
 </div>
 
+<!-- End Slide -->
 <div id="end">
     <canvas id="confettiCanvas"></canvas>
     <h1>Good Job!</h1>
     <button onclick="restartGame()">Play Again</button>
 </div>
 
+<!-- Sounds -->
 <audio id="correctSound" src="assets/correct.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
 <audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
+// All game objects
 const objectsData = [
-    {name:'cheese', color:'yellow', image:'assets/9ec80f19-c81e-49ce-ad31-97ad3945bae2.png'},
     {name:'red1', color:'red', image:'assets/red1.png'},
+    {name:'red2', color:'red', image:'assets/red2.png'},
+    {name:'red3', color:'red', image:'assets/red3.png'},
+    {name:'red4', color:'red', image:'assets/red4.png'},
+    {name:'red5', color:'red', image:'assets/red5.png'},
     {name:'yellow1', color:'yellow', image:'assets/yellow1.png'},
-    {name:'blue1', color:'blue', image:'assets/blue1.png'}
+    {name:'yellow2', color:'yellow', image:'assets/yellow2.png'},
+    {name:'yellow3', color:'yellow', image:'assets/yellow3.png'},
+    {name:'yellow4', color:'yellow', image:'assets/yellow4.png'},
+    {name:'yellow5', color:'yellow', image:'assets/yellow5.png'},
+    {name:'blue1', color:'blue', image:'assets/blue1.png'},
+    {name:'blue2', color:'blue', image:'assets/blue2.png'},
+    {name:'blue3', color:'blue', image:'assets/blue3.png'},
+    {name:'blue4', color:'blue', image:'assets/blue4.png'},
+    {name:'blue5', color:'blue', image:'assets/blue5.png'}
 ];
-
 let attempts = {};
 
-function showSplash() {
+function showSplash(){
     document.getElementById('splash').style.display='flex';
     setTimeout(()=>{
         document.getElementById('splash').style.display='none';
         document.getElementById('game').style.display='flex';
         loadObjects();
-    }, 5000);
+    },5000);
 }
 
-function loadObjects() {
-    const container = document.getElementById('objects');
+function loadObjects(){
+    const container=document.getElementById('objects');
     container.innerHTML='';
     attempts={};
-    const shuffled = objectsData.sort(()=>0.5-Math.random());
-
+    const shuffled=objectsData.sort(()=>0.5-Math.random());
     shuffled.forEach(obj=>{
         const div=document.createElement('div');
         div.classList.add('object');
-        div.setAttribute('draggable', true);
+        div.setAttribute('draggable',true);
         div.style.backgroundImage=`url('${obj.image}')`;
         div.dataset.color=obj.color;
         div.dataset.name=obj.name;
@@ -200,9 +229,8 @@ function loadObjects() {
         tick.classList.add('tick');
         div.appendChild(tick);
 
-        div.addEventListener('dragstart', dragStart);
+        div.addEventListener('dragstart',dragStart);
         container.appendChild(div);
-
         attempts[obj.name]=0;
     });
 }
@@ -244,12 +272,12 @@ function dropObject(e){
 }
 
 function showConfetti(){
-    const duration = 3000;
-    const end = Date.now() + duration;
-    (function frame() {
+    const duration=3000;
+    const end=Date.now()+duration;
+    (function frame(){
         confetti({particleCount:4,angle:60,spread:55,origin:{x:0}});
         confetti({particleCount:4,angle:120,spread:55,origin:{x:1}});
-        if(Date.now()<end){ requestAnimationFrame(frame); }
+        if(Date.now()<end){requestAnimationFrame(frame);}
     }());
 }
 
