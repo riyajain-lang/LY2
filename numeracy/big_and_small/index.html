@@ -3,155 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big and Small Game - Beautified</title>
+<title>Big and Small Game - Individual Objects</title>
 <link href="https://fonts.googleapis.com/css2?family=Arbutus&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
-* {
-    box-sizing: border-box;
-    user-select: none;
-    margin: 0;
-    padding: 0;
-}
-html, body {
-    width: 100%;
-    height: 100%;
-    font-family: 'Arbutus', serif;
-    overflow: hidden;
-    background-color: #B0E0E6;
-    color: #3E2723;
-}
+* { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; font-family: 'Arbutus', serif; overflow: hidden; background: #B0E0E6; color: #3E2723; }
 #game-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
     padding: 10px;
     border: 20px solid transparent;
-    border-image: url('assets/e1e3e2da-1ef6-42b3-a053-9aabc77248ba.png') 50 round;
+    border-image: url('assets/1d2e40cb-1e13-4cf0-973c-29fc738f907e.png') 50 round;
     border-radius: 20px;
 }
-#logo-slide {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-#logo-slide img {
-    width: 50%; max-height: 80%; object-fit: contain;
-}
-#game-slide {
-    display: none;
-    width: 100%; height: 100%;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    padding: 2vh 2vw;
-    background: linear-gradient(135deg, #fef6e4, #d0f0c0);
-    border-radius: 15px;
-}
-#instruction-text {
-    font-size: calc(1.4rem + 1vw);
-    text-align: center;
-    background-color: #d4f7dc;
-    border: 4px solid #00a651;
-    border-radius: 12px;
-    padding: 10px 20px;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-    margin-bottom: 10px;
-    min-height: 2.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-#options-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-grow: 1;
-    max-height: 60%;
-}
-.option-card {
-    width: 40%;
-    max-height: 45vh;
-    aspect-ratio: 1 / 1;
-    cursor: pointer;
-    border-radius: 50%;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-.option-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-}
-.glowing-ring {
-    box-shadow: 0 0 20px 14px #FFD700, inset 0 0 15px 8px #FFD700;
-    animation: pulse-glow 1.5s infinite;
-}
-@keyframes pulse-glow {
-    0% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.04); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.9; }
-}
+#logo-slide { position: absolute; top:0; left:0; width:100%; height:100%; background:#fff; display:flex; justify-content:center; align-items:center; z-index:10; }
+#logo-slide img { width:50%; max-height:80%; object-fit:contain; }
+
+#game-slide { display:none; width:100%; height:100%; flex-direction:column; justify-content:flex-start; align-items:center; padding:2vh 2vw; background: linear-gradient(135deg,#fef6e4,#d0f0c0); border-radius:15px; }
+#instruction-text { font-size:calc(1.4rem + 1vw); text-align:center; background-color:#d4f7dc; border:4px solid #00a651; border-radius:12px; padding:10px 20px; box-shadow:2px 2px 8px rgba(0,0,0,0.2); margin-bottom:10px; min-height:2.5em; display:flex; align-items:center; justify-content:center; }
+
+#options-container { width:100%; display:flex; justify-content:space-around; align-items:center; flex-grow:1; max-height:60%; }
+.option-card { width:40%; max-height:45vh; aspect-ratio:1/1; cursor:pointer; border-radius:50%; background-size:contain; background-repeat:no-repeat; background-position:center; box-shadow:0 6px 12px rgba(0,0,0,0.2); transition:transform 0.2s, box-shadow 0.2s; }
+.option-card:hover { transform:scale(1.05); box-shadow:0 8px 16px rgba(0,0,0,0.3); }
+.glowing-ring { box-shadow: 0 0 20px 14px #FFD700, inset 0 0 15px 8px #FFD700; animation: pulse-glow 1.5s infinite; }
+@keyframes pulse-glow { 0%{transform:scale(1);opacity:0.9}50%{transform:scale(1.04);opacity:1}100%{transform:scale(1);opacity:0.9} }
 .jiggle { animation: jiggle-anim 0.4s ease-in-out; }
-@keyframes jiggle-anim {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-8px); }
-    40%, 80% { transform: translateX(8px); }
-}
-#feedback-overlay {
-    position: absolute;
-    font-size: calc(3rem + 3vw);
-    font-weight: bold;
-    display: none;
-    z-index: 5;
-    pointer-events: none;
-}
-#end-slide {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-}
-#end-slide h1 {
-    font-size: calc(2rem + 2vw);
-    margin-bottom: 25px;
-    color: #3E2723;
-}
-#play-again-btn {
-    font-family: 'Arbutus', serif;
-    font-size: calc(1rem + 1vw);
-    padding: 12px 32px;
-    background-color: #3E2723;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-#play-again-btn:active { transform: scale(0.96); }
+@keyframes jiggle-anim {0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+#feedback-overlay { position:absolute; font-size:calc(3rem+3vw); font-weight:bold; display:none; z-index:5; pointer-events:none; }
+
+#end-slide { display:none; flex-direction:column; justify-content:center; align-items:center; width:100%; height:100%; text-align:center; }
+#end-slide h1 { font-size:calc(2rem+2vw); margin-bottom:25px; color:#3E2723; }
+#play-again-btn { font-family:'Arbutus', serif; font-size:calc(1rem+1vw); padding:12px 32px; background:#3E2723; color:#fff; border:none; border-radius:50px; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.15); }
+#play-again-btn:active { transform:scale(0.96); }
 </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="logo-slide">
-        <img src="assets/innovine-logo.png" alt="Logo">
-    </div>
+    <div id="logo-slide"><img src="assets/innovine-logo.png" alt="Logo"></div>
 
     <div id="game-slide">
         <div id="instruction-text">Tap on the object that is big or small.</div>
@@ -175,12 +65,12 @@ html, body {
 
 <script>
 const questionPool = [
-    { file: "assets/elephant&butterfly.png", target: "left", text: "Tap on the object which is big.", leftPos: "-5%", rightPos: "103%" },
-    { file: "assets/bluedaino&purpledaino.png", target: "left", text: "Tap on the object which is big.", leftPos: "-2%", rightPos: "102%" },
-    { file: "assets/watermellon&apple.png", target: "left", text: "Tap on the object which is big.", leftPos: "-5%", rightPos: "105%" },
-    { file: "assets/giraffe&turtle.png", target: "right", text: "Tap on the object which is small.", leftPos: "-5%", rightPos: "105%" },
-    { file: "assets/colourball&whiteball.png", target: "right", text: "Tap on the object which is small.", leftPos: "-3%", rightPos: "103%" },
-    { file: "assets/truck&car.png", target: "right", text: "Tap on the object which is small.", leftPos: "-2%", rightPos: "102%" }
+    { left:"assets/slide-1-blue-daino-big.png", right:"assets/slide-1-purple-daino-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-2-truck-big.png", right:"assets/slide-2-car-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-3-watermellon-big.png", right:"assets/slide-3-apple-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-4-ball-big.png", right:"assets/slide-4-ball-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-5-elephant-big.png", right:"assets/slide-5-butterfly-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-6-giraffe-big.png", right:"assets/slide-6-turtle-smal.png", target:"left", text:"Tap on the object which is big." }
 ];
 
 let activeQuestions = [];
@@ -188,120 +78,107 @@ let currentQuestionIndex = 0;
 let wrongAttemptsCount = 0;
 let inputBlock = false;
 
-function playAudioInstruction(text) {
-    if ('speechSynthesis' in window) {
+function playAudioInstruction(text){
+    if('speechSynthesis' in window){
         window.speechSynthesis.cancel();
         const speech = new SpeechSynthesisUtterance(text);
         speech.lang = 'en-US';
-        speech.rate = 0.85; 
+        speech.rate = 0.85;
         window.speechSynthesis.speak(speech);
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        document.getElementById('logo-slide').style.display = 'none';
-        document.getElementById('game-slide').style.display = 'flex';
+window.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+        document.getElementById('logo-slide').style.display='none';
+        document.getElementById('game-slide').style.display='flex';
         setupGameSession();
-    }, 2000);
+    },2000);
 });
 
-function setupGameSession() {
-    activeQuestions = [...questionPool].sort(() => Math.random() - 0.5);
-    currentQuestionIndex = 0;
+function setupGameSession(){
+    activeQuestions = [...questionPool].sort(()=>Math.random()-0.5);
+    currentQuestionIndex=0;
     loadQuestionCard();
 }
 
-function loadQuestionCard() {
-    inputBlock = false;
-    wrongAttemptsCount = 0;
+function loadQuestionCard(){
+    inputBlock=false;
+    wrongAttemptsCount=0;
 
-    const currentData = activeQuestions[currentQuestionIndex];
-    
-    document.getElementById('instruction-text').textContent = currentData.text;
+    const currentData=activeQuestions[currentQuestionIndex];
+    document.getElementById('instruction-text').textContent=currentData.text;
     playAudioInstruction(currentData.text);
 
-    const leftBox = document.getElementById('left-option');
-    const rightBox = document.getElementById('right-option');
+    const leftBox=document.getElementById('left-option');
+    const rightBox=document.getElementById('right-option');
+    leftBox.className="option-card";
+    rightBox.className="option-card";
 
-    leftBox.className = "option-card";
-    rightBox.className = "option-card";
+    leftBox.style.backgroundImage=`url('${currentData.left}')`;
+    rightBox.style.backgroundImage=`url('${currentData.right}')`;
 
-    const swapSides = Math.random() >= 0.5;
-    const leftIsCorrect = swapSides ? (currentData.target === "right") : (currentData.target === "left");
-
-    leftBox.style.backgroundImage = `url('${currentData.file}')`;
-    rightBox.style.backgroundImage = `url('${currentData.file}')`;
-
-    if (!swapSides) {
-        leftBox.style.backgroundPosition = `${currentData.leftPos} center`;
-        rightBox.style.backgroundPosition = `${currentData.rightPos} center`;
-        leftBox.setAttribute('data-correct', leftIsCorrect ? 'true' : 'false');
-        rightBox.setAttribute('data-correct', !leftIsCorrect ? 'true' : 'false');
-    } else {
-        leftBox.style.backgroundPosition = `${currentData.rightPos} center`;
-        rightBox.style.backgroundPosition = `${currentData.leftPos} center`;
-        leftBox.setAttribute('data-correct', leftIsCorrect ? 'true' : 'false');
-        rightBox.setAttribute('data-correct', !leftIsCorrect ? 'true' : 'false');
-    }
+    leftBox.setAttribute('data-correct', currentData.target==="left"?'true':'false');
+    rightBox.setAttribute('data-correct', currentData.target==="right"?'true':'false');
 }
 
-function checkAnswer(chosenSide) {
-    if (inputBlock) return;
-    const selectedElement = document.getElementById(`${chosenSide}-option`);
-    const isCorrect = selectedElement.getAttribute('data-correct') === 'true';
+function checkAnswer(chosenSide){
+    if(inputBlock) return;
+    const selectedElement=document.getElementById(`${chosenSide}-option`);
+    const isCorrect=selectedElement.getAttribute('data-correct')==='true';
 
-    if (isCorrect) {
-        inputBlock = true;
+    if(isCorrect){
+        inputBlock=true;
         selectedElement.classList.add('glowing-ring');
-        document.getElementById('snd-correct').play().catch(e => {});
+        document.getElementById('snd-correct').play().catch(()=>{});
         showVisualFeedback("✔️");
-        setTimeout(() => advanceGame(), 1500);
-    } else {
+        setTimeout(()=>advanceGame(),1500);
+    }else{
         wrongAttemptsCount++;
         selectedElement.classList.add('jiggle');
-        document.getElementById('snd-wrong').play().catch(e => {});
-        setTimeout(() => selectedElement.classList.remove('jiggle'), 400);
-        if (wrongAttemptsCount >= 2) {
-            inputBlock = true;
-            const cards = [document.getElementById('left-option'), document.getElementById('right-option')];
-            cards.forEach(card => { if(card.getAttribute('data-correct') === 'true') card.classList.add('glowing-ring'); });
-            setTimeout(() => advanceGame(), 2200);
+        document.getElementById('snd-wrong').play().catch(()=>{});
+        setTimeout(()=>selectedElement.classList.remove('jiggle'),400);
+
+        if(wrongAttemptsCount>=2){
+            inputBlock=true;
+            const cards=[document.getElementById('left-option'),document.getElementById('right-option')];
+            cards.forEach(card=>{ if(card.getAttribute('data-correct')==='true') card.classList.add('glowing-ring'); });
+            setTimeout(()=>advanceGame(),2200);
         }
     }
 }
 
-function showVisualFeedback(symbol) {
-    const feedback = document.getElementById('feedback-overlay');
-    feedback.textContent = symbol;
-    feedback.style.color = "#4CAF50";
-    feedback.style.display = 'block';
-    setTimeout(() => { feedback.style.display = 'none'; }, 1000);
+function showVisualFeedback(symbol){
+    const feedback=document.getElementById('feedback-overlay');
+    feedback.textContent=symbol;
+    feedback.style.color="#4CAF50";
+    feedback.style.display='block';
+    setTimeout(()=>{ feedback.style.display='none'; },1000);
 }
 
-function advanceGame() {
+function advanceGame(){
     currentQuestionIndex++;
-    if (currentQuestionIndex < activeQuestions.length) loadQuestionCard();
-    else {
-        document.getElementById('game-slide').style.display = 'none';
-        document.getElementById('end-slide').style.display = 'flex';
-        document.getElementById('snd-cheer').play().catch(e => {});
+    if(currentQuestionIndex<activeQuestions.length) loadQuestionCard();
+    else{
+        document.getElementById('game-slide').style.display='none';
+        document.getElementById('end-slide').style.display='flex';
+        document.getElementById('snd-cheer').play().catch(()=>{});
         triggerConfettiBurst();
     }
 }
 
-function triggerConfettiBurst() {
-    const end = Date.now() + 3000;
-    (function frame() {
-        confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.85 } });
-        confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.85 } });
-        if (Date.now() < end) requestAnimationFrame(frame);
+function triggerConfettiBurst(){
+    const end=Date.now()+3000;
+    (function frame(){
+        confetti({particleCount:3,angle:60,spread:55,origin:{x:0,y:0.85}});
+        confetti({particleCount:3,angle:120,spread:55,origin:{x:1,y:0.85}});
+        if(Date.now()<end) requestAnimationFrame(frame);
     }());
 }
 
-function restartGame() {
-    document.getElementById('end-slide').style.display = 'none';
-    document.getElementById('game-slide').style.display = 'flex';
+function restartGame(){
+    document.getElementById('end-slide').style.display='none';
+    document.getElementById('game-slide').style.display='flex';
     setupGameSession();
 }
 </script>
