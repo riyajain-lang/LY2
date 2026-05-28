@@ -1,259 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Big and Small Game</title>
-  <!-- Google Fonts Arbutus -->
-  <link href="https://fonts.googleapis.com/css2?family=Arbutus&display=swap" rel="stylesheet">
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      font-family: 'Arbutus', cursive;
-      background-color: #B0E0E6; /* Powder blue background */
-      color: #4B3832; /* Dark cocoa text */
-      overflow: hidden;
-    }
-    #logoScreen, #gameScreen, #resultScreen {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    #logoScreen {
-      background-color: #fff;
-      display: flex;
-    }
-    img {
-      max-width: 80%;
-      max-height: 60%;
-    }
-    .question-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-      gap: 50px;
-      flex-wrap: wrap;
-    }
-    .option {
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .option img {
-      width: 150px;
-      height: auto;
-      border-radius: 15px;
-    }
-    .glow-ring {
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      width: calc(100% + 20px);
-      height: calc(100% + 20px);
-      border: 5px solid yellow;
-      border-radius: 20px;
-      box-shadow: 0 0 20px 5px yellow;
-      pointer-events: none;
-    }
-    .tick {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      width: 50px;
-      height: 50px;
-      background: url('assets/correct.mp3') no-repeat center center;
-      background-size: contain;
-    }
-    #feedback {
-      font-size: 2em;
-      margin-top: 20px;
-    }
-    #resultScreen {
-      display: flex;
-      flex-direction: column;
-    }
-    #playAgain {
-      padding: 15px 30px;
-      font-size: 1.5em;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 15px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .confetti-piece {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: #FFD700;
-      opacity: 0.7;
-      animation: fall 3s linear infinite;
-    }
-    @keyframes fall {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(100vh) rotate(360deg); }
-    }
-    #instructionBox {
-      background-color: #a3d5d3;
-      padding: 10px 20px;
-      border-radius: 15px;
-      font-size: 1.2em;
-      text-align: center;
-      margin-bottom: 20px;
-      max-width: 90%;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Big and Small Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arbutus&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevents scrolling completely */
+            font-family: 'Arbutus', serif;
+            background-color: #B0E0E6; /* Powder Blue default */
+            color: #3E2723; /* Dark Cocoa */
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 10px;
+        }
+
+        /* --- SLIDE 1: LOGO SCREEN --- */
+        #logo-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF; /* Plain white background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #logo-slide img {
+            width: 50%; /* 50% of the screen width */
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        /* --- SLIDES 2-7: GAMEPLAY --- */
+        #game-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10px;
+        }
+
+        #instruction-text {
+            font-size: calc(1.2rem + 1vw);
+            text-align: center;
+            color: #3E2723;
+            margin-bottom: 10px;
+            min-height: 3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #options-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-grow: 1;
+            max-height: 60%;
+        }
+
+        .option-card {
+            width: 45%; /* Covers ~45% of the screen width */
+            height: auto;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: transform 0.1s ease;
+        }
+
+        .option-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* --- EFFECTS & ANIMATIONS --- */
+        /* Glowing ring covering the object precisely */
+        .glowing-ring {
+            box-shadow: 0 0 25px 15px #FFD700, inset 0 0 20px 10px #FFD700;
+            border-radius: 50%;
+            animation: pulse-glow 1.5s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        /* Jiggle/Wobble Animation for wrong choices */
+        .jiggle {
+            animation: jiggle-anim 0.4s ease-in-out;
+        }
+
+        @keyframes jiggle-anim {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        /* Feedback Elements */
+        #feedback-overlay {
+            position: absolute;
+            font-size: calc(3rem + 2vw);
+            font-weight: bold;
+            display: none;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* --- SLIDE 8: END SCREEN --- */
+        #end-slide {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        #end-slide h1 {
+            font-size: calc(2.5rem + 2vw);
+            margin-bottom: 30px;
+            color: #3E2723;
+        }
+
+        #play-again-btn {
+            font-family: 'Arbutus', serif;
+            font-size: calc(1rem + 1vw);
+            padding: 15px 35px;
+            background-color: #3E2723;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        #play-again-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Logo Screen -->
-  <div id="logoScreen">
-    <img src="assets/innovine-logo.png" alt="Innovine Logo">
-  </div>
+    <div id="game-container">
+        
+        <div id="logo-slide">
+            <img src="assets/innovine-logo.png" alt="Logo">
+        </div>
 
-  <!-- Game Screen -->
-  <div id="gameScreen">
-    <div id="instructionBox">Tap on the <span id="instructionType">big</span> object.</div>
-    <div class="question-container" id="questionContainer"></div>
-    <div id="feedback"></div>
-  </div>
+        <div id="game-slide">
+            <div id="instruction-text">Tap on the object...</div>
+            <div id="options-container">
+                <div id="left-option" class="option-card" onclick="checkAnswer('left')"></div>
+                <div id="right-option" class="option-card" onclick="checkAnswer('right')"></div>
+            </div>
+        </div>
 
-  <!-- Result Screen -->
-  <div id="resultScreen">
-    <div id="finalMessage" style="font-size:3em; margin-top:50px;">🎉 Good Job! 🎉</div>
-    <button id="playAgain">Play Again</button>
-  </div>
+        <div id="feedback-overlay"></div>
 
-  <!-- Audio -->
-  <audio id="audioCorrect" src="assets/correct.mp3"></audio>
-  <audio id="audioWrong" src="assets/wrong.mp3"></audio>
-  <audio id="audioClap" src="assets/freesound_community-claps-44774.mp3"></audio>
+        <div id="end-slide">
+            <h1>Good Job!</h1>
+            <button id="play-again-btn" onclick="restartGame()">Play Again</button>
+        </div>
 
-  <script>
-    const logoScreen = document.getElementById('logoScreen');
-    const gameScreen = document.getElementById('gameScreen');
-    const resultScreen = document.getElementById('resultScreen');
-    const questionContainer = document.getElementById('questionContainer');
-    const feedback = document.getElementById('feedback');
-    const instructionTypeSpan = document.getElementById('instructionType');
+    </div>
 
-    const audioCorrect = document.getElementById('audioCorrect');
-    const audioWrong = document.getElementById('audioWrong');
-    const audioClap = document.getElementById('audioClap');
+    <audio id="snd-correct" src="assets/correct.mp3" preload="auto"></audio>
+    <audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+    <audio id="snd-cheer" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
 
-    const playAgainBtn = document.getElementById('playAgain');
+    <script>
+        // Full Pool dataset mapping out rules, images, prompts and unique target definitions
+        const questionPool = [
+            { id: "elephant_butterfly", file: "assets/elephant&butterfly.png", target: "elephant", mode: "big", text: "Tap on the object which is big." },
+            { id: "blue_purple_daino", file: "assets/bluedaino&purpledaino.png", target: "blue-daino", mode: "big", text: "Tap on the object which is big." },
+            { id: "watermelon_apple", file: "assets/watermellon&apple.png", target: "watermellon", mode: "big", text: "Tap on the object which is big." },
+            { id: "giraffe_turtle", file: "assets/giraffe&turtle.png", target: "turtle", mode: "small", text: "Tap on the object which is small." },
+            { id: "color_white_ball", file: "assets/colourball&whiteball.png", target: "whiteball", mode: "small", text: "Tap on the object which is small." },
+            { id: "truck_car", file: "assets/truck&car.png", target: "car", mode: "small", text: "Tap on the object which is small." }
+        ];
 
-    const questions = [
-      { imgs: ['assets/elephant&butterfly.png'], answer: 'elephant', type: 'big' },
-      { imgs: ['assets/giraffe&turtle.png'], answer: 'turtle', type: 'small' },
-      { imgs: ['assets/bluedaino&purple-daino.png'], answer: 'blue-daino', type: 'big' },
-      { imgs: ['assets/colourball&whiteball.png'], answer: 'whiteball', type: 'small' },
-      { imgs: ['assets/watermellon&apple.png'], answer: 'watermellon', type: 'big' },
-      { imgs: ['assets/truck&car.png'], answer: 'car', type: 'small' },
-    ];
+        let activeQuestions = [];
+        let currentQuestionIndex = 0;
+        let wrongAttemptsCount = 0;
+        let inputBlock = false;
 
-    let currentQ = 0;
-    let wrongAttempts = 0;
-
-    function showLogo() {
-      logoScreen.style.display = 'flex';
-      setTimeout(() => {
-        logoScreen.style.display = 'none';
-        gameScreen.style.display = 'flex';
-        showQuestion();
-      }, 2000);
-    }
-
-    function showQuestion() {
-      questionContainer.innerHTML = '';
-      feedback.textContent = '';
-      wrongAttempts = 0;
-
-      const q = questions[currentQ];
-      instructionTypeSpan.textContent = q.type;
-
-      q.imgs.forEach(src => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'option';
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = 'option';
-        optionDiv.appendChild(img);
-        optionDiv.addEventListener('click', () => handleClick(q, optionDiv));
-        questionContainer.appendChild(optionDiv);
-      });
-    }
-
-    function handleClick(q, optionDiv) {
-      const selectedName = optionDiv.querySelector('img').src.split('/').pop().split('&')[0];
-      if(selectedName.toLowerCase() === q.answer.toLowerCase()) {
-        audioCorrect.play();
-        addGlow(optionDiv);
-        feedback.textContent = '✔ Good Job!';
-        setTimeout(nextQuestion, 1000);
-      } else {
-        audioWrong.play();
-        wrongAttempts++;
-        optionDiv.style.transform = 'translateX(10px)';
-        setTimeout(()=> optionDiv.style.transform = 'translateX(0)', 200);
-        if(wrongAttempts >= 2) {
-          // Highlight correct option
-          const correctDiv = Array.from(document.querySelectorAll('.option')).find(div => {
-            const name = div.querySelector('img').src.split('/').pop().split('&')[0];
-            return name.toLowerCase() === q.answer.toLowerCase();
-          });
-          addGlow(correctDiv);
+        // TTS / Speech Synthesis Web API Backup setup for preschool text read-aloud features
+        function playAudioInstruction(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const speech = new SpeechSynthesisUtterance(text);
+                speech.lang = 'en-US';
+                speech.rate = 0.85; // slightly slower pacing optimal for age 4 kids
+                window.speechSynthesis.speak(speech);
+            }
         }
-      }
-    }
 
-    function addGlow(optionDiv) {
-      const glow = document.createElement('div');
-      glow.className = 'glow-ring';
-      optionDiv.appendChild(glow);
-    }
+        // Initialize App Sequencing
+        window.addEventListener('DOMContentLoaded', () => {
+            // Screen 1 Layout timeout sequence
+            setTimeout(() => {
+                document.getElementById('logo-slide').style.display = 'none';
+                document.getElementById('game-slide').style.display = 'flex';
+                setupGameSession();
+            }, 2000);
+        });
 
-    function nextQuestion() {
-      currentQ++;
-      if(currentQ >= questions.length) {
-        showResult();
-      } else {
-        showQuestion();
-      }
-    }
+        function setupGameSession() {
+            // Generate a jumbled/randomized list of questions (8 items total)
+            activeQuestions = [];
+            let temporaryPool = [...questionPool];
+            
+            // Shuffle original array
+            temporaryPool.sort(() => Math.random() - 0.5);
+            
+            // Build 8 questions total out of existing pool instances safely
+            while(activeQuestions.length < 8) {
+                activeQuestions.push(...temporaryPool);
+            }
+            activeQuestions = activeQuestions.slice(0, 8); // Lock configuration exactly to 8 slides
 
-    function showResult() {
-      gameScreen.style.display = 'none';
-      resultScreen.style.display = 'flex';
-      audioClap.play();
-      launchConfetti();
-    }
+            currentQuestionIndex = 0;
+            loadQuestionCard();
+        }
 
-    playAgainBtn.addEventListener('click', () => {
-      resultScreen.style.display = 'none';
-      currentQ = 0;
-      showLogo();
-    });
+        function loadQuestionCard() {
+            inputBlock = false;
+            wrongAttemptsCount = 0;
 
-    function launchConfetti() {
-      for(let i=0;i<100;i++){
-        const confetti = document.createElement('div');
-        confetti.className='confetti-piece';
-        confetti.style.left = Math.random()*window.innerWidth + 'px';
-        confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
-        document.body.appendChild(confetti);
-        setTimeout(()=> confetti.remove(), 3000);
-      }
-    }
+            const currentData = activeQuestions[currentQuestionIndex];
+            
+            // Display clean instructional content
+            document.getElementById('instruction-text').textContent = currentData.text;
+            playAudioInstruction(currentData.text);
 
-    showLogo();
-  </script>
+            const leftBox = document.getElementById('left-option');
+            const rightBox = document.getElementById('right-option');
+
+            // Wipe out prior design statuses smoothly
+            leftBox.className = "option-card";
+            rightBox.className = "option-card";
+            
+            // Balance visual side alignments randomly to keep choice interactions valid
+            const assignLeftIsTarget = Math.random() >= 0.5;
+
+            // Generate clean isolated sub-images styled safely using CSS Background Mask styling
+            leftBox.innerHTML = `<img src="${currentData.file}" style="clip-path: inset(0 50% 0 0); transform: scale(2) translateX(25%);" data-role="${assignLeftIsTarget ? 'target' : 'bait'}">`;
+            rightBox.innerHTML = `<img src="${currentData.file}" style="clip-path: inset(0 0 0 50%); transform: scale(2) translateX(-25%);" data-role="${!assignLeftIsTarget ? 'target' : 'bait'}">`;
+        }
+
+        function checkAnswer(chosenSide) {
+            if (inputBlock) return;
+
+            const selectedElement = document.getElementById(`${chosenSide}-option`);
+            const nestedImg = selectedElement.querySelector('img');
+            const role = nestedImg.getAttribute('data-role');
+
+            if (role === 'target') {
+                // Correct Choice Behavior
+                inputBlock = true;
+                document.getElementById('snd-correct').play().catch(e => {});
+                
+                selectedElement.classList.add('glowing-ring');
+                showVisualFeedback("✔️");
+                
+                setTimeout(() => {
+                    advanceGame();
+                }, 1800);
+            } else {
+                // Incorrect Choice Behavior
+                wrongAttemptsCount++;
+                document.getElementById('snd-wrong').play().catch(e => {});
+                
+                selectedElement.classList.add('jiggle');
+                setTimeout(() => {
+                    selectedElement.classList.remove('jiggle');
+                }, 400);
+
+                // Check out the 2-Strike penalty threshold parameters
+                if (wrongAttemptsCount >= 2) {
+                    inputBlock = true;
+                    // Auto-Highlight Target Object
+                    const cards = [document.getElementById('left-option'), document.getElementById('right-option')];
+                    cards.forEach(card => {
+                        if(card.querySelector('img').getAttribute('data-role') === 'target') {
+                            card.classList.add('glowing-ring');
+                        }
+                    });
+
+                    setTimeout(() => {
+                        advanceGame();
+                    }, 2500);
+                }
+            }
+        }
+
+        function showVisualFeedback(symbol) {
+            const feedback = document.getElementById('feedback-overlay');
+            feedback.textContent = symbol;
+            feedback.style.color = "#4CAF50"; 
+            feedback.style.display = 'block';
+            
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 1200);
+        }
+
+        function advanceGame() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < activeQuestions.length) {
+                loadQuestionCard();
+            } else {
+                // Terminate and open end configurations dashboard
+                document.getElementById('game-slide').style.display = 'none';
+                document.getElementById('end-slide').style.display = 'flex';
+                
+                // Play final sounds
+                document.getElementById('snd-cheer').play().catch(e => {});
+                
+                // Fire off full screen performance optimized confetti particles 
+                triggerConfettiBurst();
+            }
+        }
+
+        function triggerConfettiBurst() {
+            const end = Date.now() + (3 * 1000); // 3 seconds continuous duration
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.8 }
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.8 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        function restartGame() {
+            document.getElementById('end-slide').style.display = 'none';
+            document.getElementById('game-slide').style.display = 'flex';
+            setupGameSession();
+        }
+    </script>
 </body>
 </html>
