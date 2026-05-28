@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big and Small Game - Individual Objects</title>
+<title>Big and Small Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Arbutus&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
@@ -19,10 +19,8 @@ html, body { width: 100%; height: 100%; font-family: 'Arbutus', serif; overflow:
 }
 #logo-slide { position: absolute; top:0; left:0; width:100%; height:100%; background:#fff; display:flex; justify-content:center; align-items:center; z-index:10; }
 #logo-slide img { width:50%; max-height:80%; object-fit:contain; }
-
 #game-slide { display:none; width:100%; height:100%; flex-direction:column; justify-content:flex-start; align-items:center; padding:2vh 2vw; background: linear-gradient(135deg,#fef6e4,#d0f0c0); border-radius:15px; }
 #instruction-text { font-size:calc(1.4rem + 1vw); text-align:center; background-color:#d4f7dc; border:4px solid #00a651; border-radius:12px; padding:10px 20px; box-shadow:2px 2px 8px rgba(0,0,0,0.2); margin-bottom:10px; min-height:2.5em; display:flex; align-items:center; justify-content:center; }
-
 #options-container { width:100%; display:flex; justify-content:space-around; align-items:center; flex-grow:1; max-height:60%; }
 .option-card { width:40%; max-height:45vh; aspect-ratio:1/1; cursor:pointer; border-radius:50%; background-size:contain; background-repeat:no-repeat; background-position:center; box-shadow:0 6px 12px rgba(0,0,0,0.2); transition:transform 0.2s, box-shadow 0.2s; }
 .option-card:hover { transform:scale(1.05); box-shadow:0 8px 16px rgba(0,0,0,0.3); }
@@ -31,7 +29,6 @@ html, body { width: 100%; height: 100%; font-family: 'Arbutus', serif; overflow:
 .jiggle { animation: jiggle-anim 0.4s ease-in-out; }
 @keyframes jiggle-anim {0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 #feedback-overlay { position:absolute; font-size:calc(3rem+3vw); font-weight:bold; display:none; z-index:5; pointer-events:none; }
-
 #end-slide { display:none; flex-direction:column; justify-content:center; align-items:center; width:100%; height:100%; text-align:center; }
 #end-slide h1 { font-size:calc(2rem+2vw); margin-bottom:25px; color:#3E2723; }
 #play-again-btn { font-family:'Arbutus', serif; font-size:calc(1rem+1vw); padding:12px 32px; background:#3E2723; color:#fff; border:none; border-radius:50px; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.15); }
@@ -66,11 +63,11 @@ html, body { width: 100%; height: 100%; font-family: 'Arbutus', serif; overflow:
 <script>
 const questionPool = [
     { left:"assets/slide-1-blue-daino-big.png", right:"assets/slide-1-purple-daino-small.png", target:"left", text:"Tap on the object which is big." },
-    { left:"assets/slide-2-truck-big.png", right:"assets/slide-2-car-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-2-truck-big.png", right:"assets/slide-2-car-small.png", target:"right", text:"Tap on the object which is small." },
     { left:"assets/slide-3-watermellon-big.png", right:"assets/slide-3-apple-small.png", target:"left", text:"Tap on the object which is big." },
-    { left:"assets/slide-4-ball-big.png", right:"assets/slide-4-ball-small.png", target:"left", text:"Tap on the object which is big." },
+    { left:"assets/slide-4-ball-big.png", right:"assets/slide-4-ball-small.png", target:"right", text:"Tap on the object which is small." },
     { left:"assets/slide-5-elephant-big.png", right:"assets/slide-5-butterfly-small.png", target:"left", text:"Tap on the object which is big." },
-    { left:"assets/slide-6-giraffe-big.png", right:"assets/slide-6-turtle-smal.png", target:"left", text:"Tap on the object which is big." }
+    { left:"assets/slide-6-giraffe-big.png", right:"assets/slide-6-turtle-smal.png", target:"right", text:"Tap on the object which is small." }
 ];
 
 let activeQuestions = [];
@@ -132,6 +129,7 @@ function checkAnswer(chosenSide){
         selectedElement.classList.add('glowing-ring');
         document.getElementById('snd-correct').play().catch(()=>{});
         showVisualFeedback("✔️");
+        triggerSmallConfetti();
         setTimeout(()=>advanceGame(),1500);
     }else{
         wrongAttemptsCount++;
@@ -154,6 +152,10 @@ function showVisualFeedback(symbol){
     feedback.style.color="#4CAF50";
     feedback.style.display='block';
     setTimeout(()=>{ feedback.style.display='none'; },1000);
+}
+
+function triggerSmallConfetti(){
+    confetti({ particleCount: 10, spread: 50, origin: { y: 0.6 } });
 }
 
 function advanceGame(){
