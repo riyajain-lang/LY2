@@ -33,7 +33,7 @@ body { margin:0; padding:0; font-family:'Comic Sans MS', sans-serif; overflow:hi
 #end { display:none; width:100%; height:100vh; background:#fff; flex-direction:column; justify-content:center; align-items:center; position:relative; }
 #end h1 { color:#32cd32; font-size:3rem; z-index:1; position:relative; }
 #end button { margin-top:20px; padding:10px 20px; font-size:1.5rem; background:#FCE478; border:none; border-radius:10px; cursor:pointer; z-index:1; position:relative; }
-#confettiCanvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+#confettiCanvas { position:absolute; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; }
 </style>
 </head>
 <body>
@@ -64,7 +64,7 @@ body { margin:0; padding:0; font-family:'Comic Sans MS', sans-serif; overflow:hi
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-// Full objects array
+// Objects data
 const objectsData = [
     {name:'red1', color:'red', image:'assets/red1.png'},
     {name:'red2', color:'red', image:'assets/red2.png'},
@@ -84,6 +84,7 @@ const objectsData = [
 
 let attempts = {};
 
+// Splash
 function showSplash(){
   document.getElementById('splash').style.display='flex';
   setTimeout(()=>{
@@ -93,6 +94,7 @@ function showSplash(){
   },5000);
 }
 
+// Load objects
 function loadObjects(){
   const container=document.getElementById('objects');
   container.innerHTML='';
@@ -116,26 +118,66 @@ function loadObjects(){
     div.appendChild(tick);
 
     div.addEventListener('dragstart',dragStart);
+    // touch support
+    div.addEventListener('touchstart', touchStart, {passive:false});
     container.appendChild(div);
     attempts[obj.name]=0;
   });
 }
 
+// Drag start
 function dragStart(e){
   e.dataTransfer.setData('text/plain', e.target.dataset.color);
   this.classList.add('dragging');
 }
 
+// Touch drag support
+let touchTarget=null;
+function touchStart(e){
+  touchTarget=e.target.closest('.object');
+  e.preventDefault();
+  document.addEventListener('touchmove', touchMove, {passive:false});
+  document.addEventListener('touchend', touchEnd);
+}
+function touchMove(e){
+  if(!touchTarget) return;
+  const touch=e.touches[0];
+  touchTarget.style.position='absolute';
+  touchTarget.style.left=(touch.clientX-50)+'px';
+  touchTarget.style.top=(touch.clientY-50)+'px';
+}
+function touchEnd(e){
+  if(!touchTarget) return;
+  const touch=e.changedTouches[0];
+  const el=document.elementFromPoint(touch.clientX, touch.clientY);
+  if(el && el.classList.contains('bucket')){
+    handleDrop(touchTarget, el);
+  }
+  touchTarget.style.position='';
+  touchTarget.style.left='';
+  touchTarget.style.top='';
+  touchTarget=null;
+  document.removeEventListener('touchmove', touchMove);
+  document.removeEventListener('touchend', touchEnd);
+}
+
+// Drop
 const buckets=document.querySelectorAll('.bucket');
 buckets.forEach(bucket=>{
   bucket.addEventListener('dragover', e=>e.preventDefault());
   bucket.addEventListener('drop', dropObject);
 });
-
 function dropObject(e){
-  const color=e.dataTransfer.getData('text/plain');
-  const targetColor=this.dataset.color;
+  e.preventDefault();
   const draggedEl=document.querySelector('.object.dragging');
+  handleDrop(draggedEl, this);
+  draggedEl.classList.remove('dragging');
+}
+
+// Handle drop logic
+function handleDrop(draggedEl, bucketEl){
+  const color=draggedEl.dataset.color;
+  const targetColor=bucketEl.dataset.color;
   const objName=draggedEl.dataset.name;
 
   if(color===targetColor){
@@ -143,20 +185,19 @@ function dropObject(e){
     draggedEl.classList.add('correct');
     draggedEl.querySelector('.feedback').style.display='block';
     draggedEl.querySelector('.tick').style.display='block';
-    setTimeout(()=>draggedEl.remove(),800);
-    checkEnd();
+    setTimeout(()=>{ draggedEl.remove(); checkEnd(); },800);
   } else {
     attempts[objName]++;
     document.getElementById('wrongSound').play();
     draggedEl.style.transform='translateX(10px)';
     setTimeout(()=>draggedEl.style.transform='translateX(0px)',200);
     if(attempts[objName]>=2){
-      document.querySelector(`.bucket.${targetColor}`).classList.add('glow');
+      bucketEl.classList.add('glow');
     }
   }
-  draggedEl.classList.remove('dragging');
 }
 
+// Check end
 function showConfetti(){
   const duration=3000;
   const end=Date.now()+duration;
@@ -166,7 +207,6 @@ function showConfetti(){
     if(Date.now()<end){ requestAnimationFrame(frame); }
   }());
 }
-
 function checkEnd(){
   if(document.querySelectorAll('.object').length===0){
     document.getElementById('game').style.display='none';
@@ -176,6 +216,7 @@ function checkEnd(){
   }
 }
 
+// Restart
 function restartGame(){
   document.getElementById('end').style.display='none';
   buckets.forEach(b=>b.classList.remove('glow'));
@@ -183,6 +224,7 @@ function restartGame(){
   loadObjects();
 }
 
+// Init
 showSplash();
 </script>
 </body>
