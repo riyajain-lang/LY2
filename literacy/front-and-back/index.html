@@ -18,7 +18,7 @@
 
   #gameScreen {
     display:none; padding: 0; box-sizing: border-box;
-    background: #FFF0F5; /* pastel lavender background for game screen */
+    background: #FFF0F5; /* pastel lavender background */
     flex-direction: column; justify-content: space-around; align-items: center;
   }
   #instruction { font-size: 2em; margin: 10px; text-align:center; color:#4b0082; }
@@ -174,7 +174,7 @@ function startConfetti(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   const pieces = [];
-  const colors = ['#FFD700','#1E90FF']; // Yellow & Blue
+  const colors = ['#FFD700','#1E90FF']; // yellow & blue
 
   for(let i=0;i<150;i++){
     pieces.push({
