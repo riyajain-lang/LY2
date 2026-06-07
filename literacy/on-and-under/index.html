@@ -15,9 +15,10 @@
     display:flex; flex-direction:column; justify-content:center; align-items:center;
   }
   #logoScreen img { width: 200px; }
+
   #gameScreen {
     display:none; padding: 0; box-sizing: border-box;
-    background: url('literacy/on-and-under/assets/on-and-under-backdrop.png') no-repeat center center;
+    background: url('assets/on-and-under-backdrop.png') no-repeat center center;
     background-size: cover;
     flex-direction: column; justify-content: space-around; align-items: center;
   }
@@ -51,7 +52,7 @@
 
 <!-- Logo Screen -->
 <div id="logoScreen">
-  <img src="literacy/on-and-under/assets/innovine-logo.png" alt="Logo">
+  <img src="assets/innovine-logo.png" alt="Logo">
 </div>
 
 <!-- Game Screen -->
@@ -72,18 +73,18 @@
   <button id="playAgainBtn">Play Again</button>
 </div>
 
-<audio id="correctSound" src="literacy/on-and-under/assets/correct.mp3"></audio>
-<audio id="wrongSound" src="literacy/on-and-under/assets/wrong.mp3"></audio>
-<audio id="clapSound" src="literacy/on-and-under/assets/freesound_community-claps-44774.mp3"></audio>
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
 
 <script>
 const questions = [
-  {image: 'literacy/on-and-under/assets/bird-on.png', answer: 'On'},
-  {image: 'literacy/on-and-under/assets/bird-under.png', answer: 'Under'},
-  {image: 'literacy/on-and-under/assets/cat-on.png', answer: 'On'},
-  {image: 'literacy/on-and-under/assets/cat-under.png', answer: 'Under'},
-  {image: 'literacy/on-and-under/assets/girl-on.png', answer: 'On'},
-  {image: 'literacy/on-and-under/assets/girl-under.png', answer: 'Under'}
+  {image: 'assets/bird-on.png', answer: 'On'},
+  {image: 'assets/bird-under.png', answer: 'Under'},
+  {image: 'assets/cat-on.png', answer: 'On'},
+  {image: 'assets/cat-under.png', answer: 'Under'},
+  {image: 'assets/girl-on.png', answer: 'On'},
+  {image: 'assets/girl-under.png', answer: 'Under'}
 ];
 
 function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
