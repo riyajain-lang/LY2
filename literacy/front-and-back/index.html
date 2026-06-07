@@ -8,7 +8,7 @@
   body, html {
     margin: 0; padding: 0; font-family: 'Arial', sans-serif;
     height: 100%; width: 100%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-    background: #fff;
+    background: #FFFAF0; /* pastel background */
   }
   #logoScreen, #gameScreen, #endScreen {
     width: 100%; height: 100%; position: absolute; top:0; left:0;
@@ -18,8 +18,7 @@
 
   #gameScreen {
     display:none; padding: 0; box-sizing: border-box;
-    background: url('assets/front&back-background.png') no-repeat center center;
-    background-size: cover;
+    background: #FFF0F5; /* pastel lavender background for game screen */
     flex-direction: column; justify-content: space-around; align-items: center;
   }
   #instruction { font-size: 2em; margin: 10px; text-align:center; color:#4b0082; }
@@ -175,7 +174,7 @@ function startConfetti(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   const pieces = [];
-  const colors = ['#FFD700','#1E90FF'];
+  const colors = ['#FFD700','#1E90FF']; // Yellow & Blue
 
   for(let i=0;i<150;i++){
     pieces.push({
