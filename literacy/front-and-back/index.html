@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Front and Back - LY4</title>
+<style>
+  body, html {
+    margin: 0; padding: 0; font-family: 'Arial', sans-serif;
+    height: 100%; width: 100%; overflow: hidden; display: flex; justify-content: center; align-items: center;
+    background: #fff;
+  }
+  #logoScreen, #gameScreen, #endScreen {
+    width: 100%; height: 100%; position: absolute; top:0; left:0;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+  }
+  #logoScreen img { width: 200px; }
+
+  #gameScreen {
+    display:none; padding: 0; box-sizing: border-box;
+    background: url('assets/front&back-background.png') no-repeat center center;
+    background-size: cover;
+    flex-direction: column; justify-content: space-around; align-items: center;
+  }
+  #instruction { font-size: 2em; margin: 10px; text-align:center; color:#4b0082; }
+  #questionImage {
+    width: 250px; height: 250px; object-fit: contain; margin: 20px 0;
+    border: 5px solid rgba(255,255,255,0.5); border-radius: 15px; box-shadow: 2px 2px 12px rgba(0,0,0,0.25);
+    transition: opacity 0.5s ease-in-out; opacity: 0;
+  }
+  .optionBtn {
+    font-size:2em; padding:18px 50px; margin:15px; border-radius:20px; border:none;
+    cursor:pointer; background:#ffccff; transition: transform 0.2s, box-shadow 0.3s;
+  }
+  .optionBtn.correct { background: #7CFC00; }
+  .optionBtn.glow { box-shadow: 0 0 25px 8px #00FF00; }
+  .optionBtn.wrong { animation: jiggle 0.3s; }
+  @keyframes jiggle {
+    0% { transform: translateX(0);}
+    25% { transform: translateX(-10px);}
+    50% { transform: translateX(10px);}
+    75% { transform: translateX(-10px);}
+    100% { transform: translateX(0);}
+  }
+  #tick { font-size:3em; color:green; margin-top:10px; display:none; }
+  #endScreen { display:none; background: #fff; flex-direction:column; justify-content:center; align-items:center;}
+  #confetti { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+  #playAgainBtn { font-size:2em; padding:18px 40px; margin-top:20px; border-radius:20px; border:none; background:#ff99cc; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div id="logoScreen">
+  <img src="assets/innovine-logo.png" alt="Logo">
+</div>
+
+<div id="gameScreen">
+  <div id="instruction">Front or Back?</div>
+  <img id="questionImage" src="" alt="Question">
+  <div style="display:flex; justify-content:center; gap:40px; flex-wrap: wrap;">
+    <button class="optionBtn" id="frontBtn">Front</button>
+    <button class="optionBtn" id="backBtn">Back</button>
+  </div>
+  <div id="tick">✔️</div>
+</div>
+
+<div id="endScreen">
+  <div id="endMessage" style="font-size:3em; color:#4b0082;">Good Job!</div>
+  <canvas id="confetti"></canvas>
+  <button id="playAgainBtn">Play Again</button>
+</div>
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+
+<script>
+const questions = [
+  {image: 'assets/chair-front.png', answer: 'Front'},
+  {image: 'assets/chair-back.png', answer: 'Back'},
+  {image: 'assets/girl-front.png', answer: 'Front'},
+  {image: 'assets/girl-back.png', answer: 'Back'},
+  {image: 'assets/monkey-front.png', answer: 'Front'},
+  {image: 'assets/monkey-back.png', answer: 'Back'}
+];
+
+function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+let questionIndex = 0;
+let wrongAttempts = 0;
+
+const logoScreen = document.getElementById('logoScreen');
+const gameScreen = document.getElementById('gameScreen');
+const endScreen = document.getElementById('endScreen');
+const questionImage = document.getElementById('questionImage');
+const tick = document.getElementById('tick');
+const frontBtn = document.getElementById('frontBtn');
+const backBtn = document.getElementById('backBtn');
+const playAgainBtn = document.getElementById('playAgainBtn');
+
+const correctSound = document.getElementById('correctSound');
+const wrongSound = document.getElementById('wrongSound');
+const clapSound = document.getElementById('clapSound');
+
+let shuffledQuestions = shuffle(questions);
+
+function showQuestion() {
+  wrongAttempts = 0;
+  tick.style.display = 'none';
+  const q = shuffledQuestions[questionIndex];
+  questionImage.style.opacity = 0;
+  questionImage.src = q.image;
+  frontBtn.disabled = false;
+  backBtn.disabled = false;
+  frontBtn.classList.remove('glow','wrong','correct');
+  backBtn.classList.remove('glow','wrong','correct');
+  setTimeout(()=>{questionImage.style.opacity = 1;},50);
+}
+
+function handleAnswer(selected) {
+  const correct = shuffledQuestions[questionIndex].answer;
+  if (selected === correct) {
+    tick.style.display = 'block';
+    correctSound.play();
+    if(questionIndex < shuffledQuestions.length -1){
+      questionIndex++;
+      setTimeout(showQuestion, 1000);
+    } else {
+      setTimeout(showEndScreen, 1000);
+    }
+  } else {
+    wrongSound.play();
+    wrongAttempts++;
+    const btn = selected === 'Front' ? frontBtn : backBtn;
+    btn.classList.add('wrong');
+    setTimeout(()=>{btn.classList.remove('wrong');},300);
+    if(wrongAttempts >= 2){
+      const correctBtn = correct === 'Front' ? frontBtn : backBtn;
+      correctBtn.classList.add('glow');
+    }
+  }
+}
+
+function showEndScreen(){
+  gameScreen.style.display='none';
+  endScreen.style.display='flex';
+  startConfetti();
+}
+
+function restartGame(){
+  endScreen.style.display='none';
+  shuffledQuestions = shuffle(questions);
+  questionIndex = 0;
+  logoScreen.style.display='flex';
+  setTimeout(()=>{
+    logoScreen.style.display='none';
+    gameScreen.style.display='flex';
+    showQuestion();
+  },2000);
+}
+
+frontBtn.addEventListener('click', ()=>handleAnswer('Front'));
+backBtn.addEventListener('click', ()=>handleAnswer('Back'));
+playAgainBtn.addEventListener('click', restartGame);
+
+setTimeout(()=>{
+  logoScreen.style.display='none';
+  gameScreen.style.display='flex';
+  showQuestion();
+},2000);
+
+function startConfetti(){
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = [];
+  const colors = ['#FFD700','#1E90FF'];
+
+  for(let i=0;i<150;i++){
+    pieces.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r: Math.random()*6+4,
+      d: Math.random()*20+10,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      tilt: Math.random()*10-10,
+      tiltAngleIncrement: Math.random()*0.07+0.05
+    });
+  }
+
+  let angle = 0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<pieces.length;i++){
+      let p=pieces[i];
+      ctx.beginPath();
+      ctx.lineWidth=p.r/2;
+      ctx.strokeStyle=p.color;
+      ctx.moveTo(p.x + p.tilt + p.r/4, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/4);
+      ctx.stroke();
+      p.tiltAngle += p.tiltAngleIncrement;
+      p.y += (Math.cos(angle+p.d)+1+p.r/2)/2;
+      p.x += Math.sin(angle);
+      p.tilt = Math.sin(p.tiltAngle)*15;
+      if(p.y>canvas.height){
+        p.y = -10;
+        p.x = Math.random()*canvas.width;
+      }
+    }
+    angle += 0.01;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
+
+</body>
+</html>
