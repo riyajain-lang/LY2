@@ -10,23 +10,30 @@
     height: 100%; width: 100%; overflow: hidden; display: flex; justify-content: center; align-items: center;
     background: #fff;
   }
-  #logoScreen, #gameScreen, #endScreen { width: 100%; height: 100%; position: absolute; top:0; left:0; display:flex; flex-direction:column; justify-content:center; align-items:center;}
+  #logoScreen, #gameScreen, #endScreen {
+    width: 100%; height: 100%; position: absolute; top:0; left:0;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+  }
   #logoScreen img { width: 200px; }
-  #gameScreen { 
-    display:none; 
-    padding: 10px; 
-    box-sizing: border-box;
-    background: url('assets/on-and-under-backdrop.png') no-repeat center center;
-    background-size: cover; 
+
+  #gameScreen {
+    display:none; padding: 0; box-sizing: border-box;
+    background: url('literacy/on-and-under/assets/on-and-under-backdrop.png') no-repeat center center;
+    background-size: cover;
+    flex-direction: column; justify-content: space-around; align-items: center;
   }
-  #instruction { font-size: 2em; margin-bottom: 20px; text-align:center; color:#4b0082; }
-  #questionImage { 
-    width: 220px; height: 220px; object-fit: contain; margin-bottom:20px;
-    border: 5px solid rgba(255,255,255,0.5); border-radius: 15px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-    transition: opacity 0.5s ease-in-out;
-    opacity: 0;
+  #instruction { font-size: 2em; margin: 10px; text-align:center; color:#4b0082; }
+
+  #questionImage {
+    width: 250px; height: 250px; object-fit: contain; margin: 20px 0;
+    border: 5px solid rgba(255,255,255,0.5); border-radius: 15px; box-shadow: 2px 2px 12px rgba(0,0,0,0.25);
+    transition: opacity 0.5s ease-in-out; opacity: 0;
   }
-  .optionBtn { font-size:2em; padding:15px 40px; margin:15px; border-radius:15px; border:none; cursor:pointer; background:#ffccff; transition: transform 0.2s, box-shadow 0.3s; }
+
+  .optionBtn {
+    font-size:2em; padding:18px 50px; margin:15px; border-radius:20px; border:none;
+    cursor:pointer; background:#ffccff; transition: transform 0.2s, box-shadow 0.3s;
+  }
   .optionBtn.correct { background: #7CFC00; }
   .optionBtn.glow { box-shadow: 0 0 25px 8px #00FF00; }
   .optionBtn.wrong { animation: jiggle 0.3s; }
@@ -37,24 +44,25 @@
     75% { transform: translateX(-10px);}
     100% { transform: translateX(0);}
   }
+
   #tick { font-size:3em; color:green; margin-top:10px; display:none; }
   #endScreen { display:none; background: #fff; flex-direction:column; justify-content:center; align-items:center;}
   #confetti { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
-  #playAgainBtn { font-size:2em; padding:15px 30px; margin-top:20px; border-radius:15px; border:none; background:#ff99cc; cursor:pointer; }
+  #playAgainBtn { font-size:2em; padding:18px 40px; margin-top:20px; border-radius:20px; border:none; background:#ff99cc; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<!-- Logo Screen (plain white) -->
+<!-- Logo Screen -->
 <div id="logoScreen">
-  <img src="assets/innovine-logo.png" alt="Logo">
+  <img src="literacy/on-and-under/assets/innovine-logo.png" alt="Logo">
 </div>
 
-<!-- Game Screen (with your background) -->
+<!-- Game Screen -->
 <div id="gameScreen">
   <div id="instruction">Where Am I?</div>
   <img id="questionImage" src="" alt="Question">
-  <div>
+  <div style="display:flex; justify-content:center; gap:40px; flex-wrap: wrap;">
     <button class="optionBtn" id="onBtn">On</button>
     <button class="optionBtn" id="underBtn">Under</button>
   </div>
@@ -68,18 +76,18 @@
   <button id="playAgainBtn">Play Again</button>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3"></audio>
+<audio id="correctSound" src="literacy/on-and-under/assets/correct.mp3"></audio>
+<audio id="wrongSound" src="literacy/on-and-under/assets/wrong.mp3"></audio>
+<audio id="clapSound" src="literacy/on-and-under/assets/freesound_community-claps-44774.mp3"></audio>
 
 <script>
 const questions = [
-  {image: 'assets/bird-on.png', answer: 'On'},
-  {image: 'assets/bird-under.png', answer: 'Under'},
-  {image: 'assets/cat-on.png', answer: 'On'},
-  {image: 'assets/cat-under.png', answer: 'Under'},
-  {image: 'assets/girl-on.png', answer: 'On'},
-  {image: 'assets/girl-under.png', answer: 'Under'}
+  {image: 'literacy/on-and-under/assets/bird-on.png', answer: 'On'},
+  {image: 'literacy/on-and-under/assets/bird-under.png', answer: 'Under'},
+  {image: 'literacy/on-and-under/assets/cat-on.png', answer: 'On'},
+  {image: 'literacy/on-and-under/assets/cat-under.png', answer: 'Under'},
+  {image: 'literacy/on-and-under/assets/girl-on.png', answer: 'On'},
+  {image: 'literacy/on-and-under/assets/girl-under.png', answer: 'Under'}
 ];
 
 function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
