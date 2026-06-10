@@ -18,7 +18,6 @@ body, html {
     background: #fff;
     overflow: hidden;
 }
-
 #game-container {
     width: 100%;
     max-width: 900px;
@@ -36,7 +35,6 @@ body, html {
     border: 15px solid #fff;
     box-shadow: 0 0 0 20px #FFB6C1 inset, 0 0 0 35px #FFD700 inset;
 }
-
 .slide {
     display: none;
     width: 100%;
@@ -45,7 +43,6 @@ body, html {
     justify-content: flex-start;
     align-items: center;
 }
-
 #instructions {
     font-size: 1.8em;
     font-weight: bold;
@@ -56,7 +53,6 @@ body, html {
     border-radius: 15px;
     background-color: #e0ffe0;
 }
-
 #slide-1-content {
     display: flex;
     justify-content: space-between;
@@ -64,7 +60,6 @@ body, html {
     align-items: center;
     flex-grow: 1;
 }
-
 #question-container {
     display: flex;
     flex-wrap: wrap;
@@ -73,7 +68,6 @@ body, html {
     max-width: 60%;
     margin-left: 10px;
 }
-
 #question-container img {
     width: 80px;
     height: 80px;
@@ -82,7 +76,6 @@ body, html {
     padding: 4px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
-
 .options {
     display: flex;
     flex-direction: column;
@@ -90,7 +83,6 @@ body, html {
     align-items: center;
     width: 35%;
 }
-
 .option-btn {
     padding: 28px 32px;
     font-size: 2em;
@@ -101,21 +93,17 @@ body, html {
     background-color: #FFCCFF;
     transition: transform 0.2s, box-shadow 0.2s;
 }
-
 .option-btn:hover {
     transform: scale(1.1) rotate(-2deg);
     box-shadow: 0 0 20px rgba(255,192,203,0.6);
 }
-
 .correct {
     background-color: #8BC34A !important;
     color: #fff;
 }
-
 .wrong {
     animation: wiggle 0.3s;
 }
-
 @keyframes wiggle {
     0% { transform: rotate(0deg);}
     25% { transform: rotate(5deg);}
@@ -123,13 +111,11 @@ body, html {
     75% { transform: rotate(5deg);}
     100% { transform: rotate(0deg);}
 }
-
 #feedback {
     font-size: 1.6em;
     margin-top: 18px;
     color: #333;
 }
-
 #play-again {
     display: none;
     padding: 22px 32px;
@@ -146,12 +132,10 @@ body, html {
 <body>
 
 <div id="game-container">
-    <!-- Slide 0: Logo -->
     <div class="slide" id="slide-0">
         <img src="assets/innovine-logo.png" alt="Innovine Logo" style="max-width:300px;">
     </div>
 
-    <!-- Slide 1: Questions -->
     <div class="slide" id="slide-1">
         <div id="instructions">Count the objects and tap on the correct number.</div>
         <div id="slide-1-content">
@@ -161,9 +145,8 @@ body, html {
         <div id="feedback"></div>
     </div>
 
-    <!-- Slide End -->
     <div class="slide" id="slide-end">
-        <div id="feedback">🎉 Congratulations! 🎉</div>
+        <div id="feedback">🎉 Good Job! 🎉</div>
         <button id="play-again">Play Again</button>
     </div>
 </div>
@@ -187,7 +170,6 @@ const clapAudio = document.getElementById('audio-clap');
 let currentSlide = 0;
 let attempts = 0;
 
-// 8 Jumble Questions with dynamic multiple images
 const questions = [
     {img: "assets/apple.png", answer: "11", options: ["11","12","13"]},
     {img: "assets/butterfly.png", answer: "12", options: ["12","14","11"]},
@@ -199,84 +181,65 @@ const questions = [
     {img: "assets/horse.png", answer: "13", options: ["13","12","15"]}
 ];
 
-function shuffleArray(array) { return array.sort(() => Math.random() - 0.5); }
+function shuffleArray(array){ return array.sort(() => Math.random()-0.5); }
 let shuffledQuestions = shuffleArray([...questions]);
 
-function showSlide(index){
-    slides.forEach(s => s.style.display = 'none');
-    slides[index].style.display = 'flex';
+function showSlide(index){ slides.forEach(s=>s.style.display='none'); slides[index].style.display='flex'; }
+
+function startGame(){
+    currentSlide=1; attempts=0; shuffledQuestions=shuffleArray([...questions]);
+    showSlide(currentSlide); loadQuestion();
 }
 
-function startGame() {
-    currentSlide = 1;
-    attempts = 0;
-    shuffledQuestions = shuffleArray([...questions]);
-    showSlide(currentSlide);
-    loadQuestion();
-}
-
-function loadQuestion() {
-    attempts = 0;
-    feedbackEl.innerText = '';
-    const q = shuffledQuestions[currentSlide - 1];
-
-    // Show multiple images equal to the answer
-    questionContainer.innerHTML = '';
-    const count = parseInt(q.answer);
-    for (let i = 0; i < count; i++) {
-        const img = document.createElement('img');
-        img.src = q.img;
+function loadQuestion(){
+    attempts=0; feedbackEl.innerText='';
+    const q=shuffledQuestions[currentSlide-1];
+    questionContainer.innerHTML='';
+    const count=parseInt(q.answer);
+    for(let i=0;i<count;i++){
+        const img=document.createElement('img'); img.src=q.img;
         questionContainer.appendChild(img);
     }
-
-    // Shuffle and create options
-    optionsContainer.innerHTML = '';
-    shuffleArray(q.options).forEach(opt => {
-        const btn = document.createElement('button');
-        btn.classList.add('option-btn');
-        btn.innerText = opt;
-        btn.addEventListener('click', () => checkAnswer(opt, btn));
+    optionsContainer.innerHTML='';
+    shuffleArray(q.options).forEach(opt=>{
+        const btn=document.createElement('button');
+        btn.classList.add('option-btn'); btn.innerText=opt;
+        btn.addEventListener('click',()=>checkAnswer(opt,btn));
         optionsContainer.appendChild(btn);
     });
 }
 
-function checkAnswer(selected, btn) {
-    const q = shuffledQuestions[currentSlide - 1];
-    if(selected === q.answer){
-        btn.classList.add('correct');
-        feedbackEl.innerText = 'Good Job!';
-        correctAudio.play();
-        setTimeout(() => nextQuestion(), 1000);
+function checkAnswer(selected,btn){
+    const q=shuffledQuestions[currentSlide-1];
+    if(selected===q.answer){
+        btn.classList.add('correct'); feedbackEl.innerText='Good Job!';
+        correctAudio.play(); clapAudio.play();
+        setTimeout(()=>nextQuestion(),1000);
     } else {
-        attempts++;
-        btn.classList.add('wrong');
-        wrongAudio.play();
-        setTimeout(() => btn.classList.remove('wrong'), 300);
+        attempts++; btn.classList.add('wrong'); wrongAudio.play();
+        setTimeout(()=>btn.classList.remove('wrong'),300);
         if(attempts>=2){
-            const correctBtn = Array.from(optionsContainer.children).find(b=>b.innerText===q.answer);
+            const correctBtn=Array.from(optionsContainer.children).find(b=>b.innerText===q.answer);
             correctBtn.classList.add('correct');
         }
     }
 }
 
 function nextQuestion(){
-    if(currentSlide < shuffledQuestions.length){
-        currentSlide++;
-        loadQuestion();
-    } else { endGame(); }
+    if(currentSlide<shuffledQuestions.length){ currentSlide++; loadQuestion(); }
+    else { endGame(); }
 }
 
 function endGame(){
     showSlide(slides.length-1);
+    confetti({particleCount:150,spread:70,origin:{y:0.6}});
     clapAudio.play();
-    confetti({particleCount:150, spread:70, origin:{y:0.6}});
 }
 
-playAgainBtn.addEventListener('click', () => { startGame(); });
+playAgainBtn.addEventListener('click',()=>startGame());
 
-// Show logo for 2 seconds first
 showSlide(0);
-setTimeout(() => { startGame(); }, 2000);
+setTimeout(()=>startGame(),2000);
 </script>
 </body>
 </html>
