@@ -65,20 +65,22 @@ body, html {
     flex-grow: 1;
 }
 
-#question-img {
-    width: 60%;
-    height: auto;
-    max-height: 600px;
+#question-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 60%;
     margin-left: 10px;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-    animation: float 3s ease-in-out infinite;
 }
 
-@keyframes float {
-    0% { transform: translateY(0px);}
-    50% { transform: translateY(-10px);}
-    100% { transform: translateY(0px);}
+#question-container img {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #FFB6C1;
+    border-radius: 15px;
+    padding: 4px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
 
 .options {
@@ -153,7 +155,7 @@ body, html {
     <div class="slide" id="slide-1">
         <div id="instructions">Count the objects and tap on the correct number.</div>
         <div id="slide-1-content">
-            <img id="question-img" src="" alt="Question">
+            <div id="question-container"></div>
             <div class="options" id="options-container"></div>
         </div>
         <div id="feedback"></div>
@@ -173,7 +175,7 @@ body, html {
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
 const slides = document.querySelectorAll('.slide');
-const questionImg = document.getElementById('question-img');
+const questionContainer = document.getElementById('question-container');
 const optionsContainer = document.getElementById('options-container');
 const feedbackEl = document.getElementById('feedback');
 const playAgainBtn = document.getElementById('play-again');
@@ -185,7 +187,7 @@ const clapAudio = document.getElementById('audio-clap');
 let currentSlide = 0;
 let attempts = 0;
 
-// 8 Jumble Questions using 11–15 images with correct asset paths
+// 8 Jumble Questions with dynamic multiple images
 const questions = [
     {img: "assets/apple.png", answer: "11", options: ["11","12","13"]},
     {img: "assets/butterfly.png", answer: "12", options: ["12","14","11"]},
@@ -217,8 +219,17 @@ function loadQuestion() {
     attempts = 0;
     feedbackEl.innerText = '';
     const q = shuffledQuestions[currentSlide - 1];
-    questionImg.src = q.img;
 
+    // Show multiple images equal to the answer
+    questionContainer.innerHTML = '';
+    const count = parseInt(q.answer);
+    for (let i = 0; i < count; i++) {
+        const img = document.createElement('img');
+        img.src = q.img;
+        questionContainer.appendChild(img);
+    }
+
+    // Shuffle and create options
     optionsContainer.innerHTML = '';
     shuffleArray(q.options).forEach(opt => {
         const btn = document.createElement('button');
