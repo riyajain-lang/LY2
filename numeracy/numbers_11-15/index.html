@@ -18,6 +18,7 @@ body, html {
     background: #fff;
     overflow: hidden;
 }
+
 #game-container {
     width: 100%;
     max-width: 900px;
@@ -35,6 +36,7 @@ body, html {
     border: 15px solid #fff;
     box-shadow: 0 0 0 20px #FFB6C1 inset, 0 0 0 35px #FFD700 inset;
 }
+
 .slide {
     display: none;
     width: 100%;
@@ -43,6 +45,7 @@ body, html {
     justify-content: flex-start;
     align-items: center;
 }
+
 #instructions {
     font-size: 1.8em;
     font-weight: bold;
@@ -53,6 +56,7 @@ body, html {
     border-radius: 15px;
     background-color: #e0ffe0;
 }
+
 #slide-1-content {
     display: flex;
     justify-content: space-between;
@@ -60,6 +64,7 @@ body, html {
     align-items: center;
     flex-grow: 1;
 }
+
 #question-container {
     display: flex;
     flex-wrap: wrap;
@@ -68,6 +73,7 @@ body, html {
     max-width: 60%;
     margin-left: 10px;
 }
+
 #question-container img {
     width: 80px;
     height: 80px;
@@ -76,6 +82,7 @@ body, html {
     padding: 4px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
+
 .options {
     display: flex;
     flex-direction: column;
@@ -83,6 +90,7 @@ body, html {
     align-items: center;
     width: 35%;
 }
+
 .option-btn {
     padding: 28px 32px;
     font-size: 2em;
@@ -93,17 +101,21 @@ body, html {
     background-color: #FFCCFF;
     transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .option-btn:hover {
     transform: scale(1.1) rotate(-2deg);
     box-shadow: 0 0 20px rgba(255,192,203,0.6);
 }
+
 .correct {
     background-color: #8BC34A !important;
     color: #fff;
 }
+
 .wrong {
     animation: wiggle 0.3s;
 }
+
 @keyframes wiggle {
     0% { transform: rotate(0deg);}
     25% { transform: rotate(5deg);}
@@ -111,16 +123,25 @@ body, html {
     75% { transform: rotate(5deg);}
     100% { transform: rotate(0deg);}
 }
+
 #feedback {
     font-size: 1.6em;
     margin-top: 18px;
     color: #333;
 }
+
+#slide-end {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 #play-again {
-    display: none;
+    display: block;
     padding: 22px 32px;
     font-size: 1.8em;
-    margin-top: 22px;
+    margin-top: 20px;
     border: none;
     border-radius: 18px;
     background-color: #1CB6BB;
@@ -132,10 +153,12 @@ body, html {
 <body>
 
 <div id="game-container">
+    <!-- Slide 0: Logo -->
     <div class="slide" id="slide-0">
         <img src="assets/innovine-logo.png" alt="Innovine Logo" style="max-width:300px;">
     </div>
 
+    <!-- Slide 1: Questions -->
     <div class="slide" id="slide-1">
         <div id="instructions">Count the objects and tap on the correct number.</div>
         <div id="slide-1-content">
@@ -145,6 +168,7 @@ body, html {
         <div id="feedback"></div>
     </div>
 
+    <!-- End Slide -->
     <div class="slide" id="slide-end">
         <div id="feedback">🎉 Good Job! 🎉</div>
         <button id="play-again">Play Again</button>
@@ -170,6 +194,7 @@ const clapAudio = document.getElementById('audio-clap');
 let currentSlide = 0;
 let attempts = 0;
 
+// 8 jumbled questions
 const questions = [
     {img: "assets/apple.png", answer: "11", options: ["11","12","13"]},
     {img: "assets/butterfly.png", answer: "12", options: ["12","14","11"]},
@@ -202,8 +227,7 @@ function loadQuestion(){
     }
     optionsContainer.innerHTML='';
     shuffleArray(q.options).forEach(opt=>{
-        const btn=document.createElement('button');
-        btn.classList.add('option-btn'); btn.innerText=opt;
+        const btn=document.createElement('button'); btn.classList.add('option-btn'); btn.innerText=opt;
         btn.addEventListener('click',()=>checkAnswer(opt,btn));
         optionsContainer.appendChild(btn);
     });
