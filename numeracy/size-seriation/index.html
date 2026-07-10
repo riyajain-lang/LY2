@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#cbb9ff" />
+    <title>Size Seriation</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        font-family: "Trebuchet MS", Arial, sans-serif;
+        background: #f8f4ff;
+        color: #4b365f;
+      }
+      button {
+        font: inherit;
+      }
+      img {
+        display: block;
+        max-width: 100%;
+      }
+      #splashScreen {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+      }
+      #splashLogo {
+        width: 250px;
+        max-width: 58vw;
+        max-height: 38vh;
+        object-fit: contain;
+      }
+      #gameScreen {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        padding: max(8px, env(safe-area-inset-top))
+          max(10px, env(safe-area-inset-right))
+          max(8px, env(safe-area-inset-bottom))
+          max(10px, env(safe-area-inset-left));
+        background:
+          radial-gradient(circle at 8% 14%, rgba(255, 255, 255, 0.92) 0 3.1%, transparent 3.3%),
+          radial-gradient(circle at 92% 12%, rgba(255, 255, 255, 0.88) 0 2.8%, transparent 3%),
+          radial-gradient(circle at 18% 72%, rgba(255, 211, 182, 0.62) 0 11%, transparent 11.3%),
+          radial-gradient(circle at 84% 74%, rgba(191, 232, 208, 0.7) 0 12%, transparent 12.3%),
+          linear-gradient(145deg, #dff5ff 0%, #e9ddff 48%, #ffe7d6 100%);
+      }
+      #gameScreen:before {
+        content: "";
+        position: absolute;
+        left: -8%;
+        right: -8%;
+        bottom: -14%;
+        height: 48%;
+        border-radius: 50% 50% 0 0;
+        background: linear-gradient(90deg, #ffd3b6, #ffb6b9 48%, #cbb9ff);
+        z-index: 0;
+      }
+      .decor {
+        position: absolute;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .sun {
+        width: 70px;
+        height: 70px;
+        top: 7%;
+        right: 5%;
+        border-radius: 50%;
+        background: #ffd166;
+        box-shadow: 0 0 0 10px rgba(255, 209, 102, 0.24);
+      }
+      .cloud {
+        width: 88px;
+        height: 31px;
+        top: 12%;
+        left: 5%;
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.88);
+      }
+      .cloud:before,
+      .cloud:after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: inherit;
+      }
+      .cloud:before {
+        width: 36px;
+        height: 36px;
+        left: 14px;
+        top: -17px;
+      }
+      .cloud:after {
+        width: 45px;
+        height: 45px;
+        right: 8px;
+        top: -24px;
+      }
+      .topBar,
+      .gameCard {
+        position: relative;
+        z-index: 2;
+      }
+      .topBar {
+        width: 980px;
+        max-width: 98%;
+        min-height: 13%;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 8px;
+      }
+      .titleWrap {
+        grid-column: 2;
+        text-align: center;
+      }
+      h1 {
+        margin: 0;
+        font-size: 46px;
+        font-size: clamp(28px, 4.4vw, 48px);
+        line-height: 1;
+        color: #5b3a78;
+        text-shadow: 0 3px 0 rgba(255, 255, 255, 0.82);
+      }
+      .subtitle {
+        margin-top: 4px;
+        font-size: 18px;
+        font-size: clamp(14px, 1.9vw, 20px);
+        font-weight: 900;
+        color: #3a7f7e;
+      }
+      .progressBox {
+        justify-self: end;
+        min-width: 84px;
+        padding: 7px 11px;
+        border: 3px solid #5b3a78;
+        border-radius: 18px;
+        background: #fff;
+        text-align: center;
+        font-size: 18px;
+        font-size: clamp(14px, 1.8vw, 18px);
+        font-weight: 900;
+        box-shadow: 0 4px 0 rgba(91, 58, 120, 0.2);
+      }
+      .gameCard {
+        width: 980px;
+        max-width: 97%;
+        flex: 1;
+        min-height: 0;
+        max-height: 84%;
+        margin-bottom: 1%;
+        padding: 12px 22px 16px;
+        border: 5px solid #5b3a78;
+        border-radius: 32px;
+        background: rgba(255, 253, 248, 0.97);
+        box-shadow:
+          0 10px 0 rgba(91, 58, 120, 0.2),
+          0 17px 30px rgba(74, 54, 95, 0.16);
+        display: grid;
+        grid-template-rows: auto minmax(125px, 1fr) auto minmax(150px, 1.05fr);
+        gap: 9px;
+        align-items: center;
+      }
+      #instruction {
+        margin: 0;
+        text-align: center;
+        font-size: 30px;
+        font-size: clamp(20px, 3vw, 31px);
+        line-height: 1.1;
+        font-weight: 1000;
+        color: #4b365f;
+      }
+      .objectStage {
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .objectCard {
+        position: relative;
+        width: 230px;
+        height: 150px;
+        max-width: 42vw;
+        max-height: 24vh;
+        padding: 10px;
+        border: 4px solid #ff8a80;
+        border-radius: 25px;
+        background: #fff;
+        box-shadow: 0 7px 0 #f6b2a7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .objectCard:before {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border: 2px dashed #cbb9ff;
+        border-radius: 17px;
+        pointer-events: none;
+      }
+      #questionImage {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        animation: gentleFloat 1.4s ease-in-out infinite alternate;
+      }
+      .promptText {
+        text-align: center;
+        font-size: 21px;
+        font-size: clamp(16px, 2.2vw, 23px);
+        font-weight: 900;
+        color: #5b3a78;
+      }
+      #options {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        align-items: stretch;
+      }
+      .binOption {
+        position: relative;
+        min-width: 0;
+        min-height: 135px;
+        padding: 8px 8px 6px;
+        border: 5px solid #5b3a78;
+        border-radius: 26px;
+        background: #fff;
+        box-shadow: 0 8px 0 #9d83bd;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        touch-action: manipulation;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease,
+          background 0.2s ease;
+        overflow: hidden;
+      }
+      .binOption::before {
+        content: "";
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        top: 0;
+        height: 7px;
+        border-radius: 0 0 10px 10px;
+        background: #ff8a80;
+      }
+      .binOption:nth-child(2)::before {
+        background: #ffd166;
+      }
+      .binOption:nth-child(3)::before {
+        background: #74c9b8;
+      }
+      .binOption:active {
+        transform: translateY(5px) scale(0.985);
+        box-shadow: 0 3px 0 #9d83bd;
+      }
+      .binOption:disabled {
+        cursor: default;
+      }
+      .binImageWrap {
+        width: 100%;
+        min-height: 0;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .binOption img {
+        width: 100%;
+        height: 100%;
+        max-height: 112px;
+        object-fit: contain;
+        object-position: center;
+        pointer-events: none;
+      }
+      .binLabel {
+        margin-top: 2px;
+        padding: 3px 14px;
+        border-radius: 15px;
+        background: #f3edff;
+        color: #5b3a78;
+        font-size: 19px;
+        font-size: clamp(15px, 2vw, 21px);
+        font-weight: 1000;
+        line-height: 1;
+      }
+      .binOption:nth-child(1) .binLabel {
+        background: #ffd3c9;
+        color: #8a4050;
+      }
+      .binOption:nth-child(2) .binLabel {
+        background: #fff0b8;
+        color: #7a5a12;
+      }
+      .binOption:nth-child(3) .binLabel {
+        background: #cfeedd;
+        color: #2f6f62;
+      }
+      .binOption.wrong {
+        border-color: #d54848;
+        background: #fff6f6;
+        animation: giggle 0.42s ease;
+      }
+      .binOption.correct {
+        border-color: #31a449;
+        background: #f2ffed;
+        box-shadow: 0 8px 0 #278b3c;
+      }
+      .binOption.hintGlow {
+        border-color: #f1a400;
+        background: #fffdf2;
+        animation: answerGlow 0.8s ease-in-out infinite alternate;
+      }
+      .tickMark {
+        position: absolute;
+        top: 8px;
+        right: 9px;
+        width: 48px;
+        height: 48px;
+        border: 4px solid #fff;
+        border-radius: 50%;
+        background: #35b94f;
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-size: 30px;
+        font-weight: 1000;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        animation: tickPop 0.45s ease;
+      }
+      #feedback {
+        position: fixed;
+        z-index: 50;
+        left: 50%;
+        top: 48%;
+        transform: translate(-50%, -50%) scale(0.6);
+        opacity: 0;
+        pointer-events: none;
+        min-width: 300px;
+        max-width: 82vw;
+        padding: 15px 24px;
+        border: 5px solid #2e963f;
+        border-radius: 26px;
+        background: rgba(242, 255, 236, 0.98);
+        color: #257a35;
+        text-align: center;
+        font-size: 48px;
+        font-size: clamp(31px, 6vw, 54px);
+        font-weight: 1000;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+      }
+      #feedback.show {
+        animation: feedbackPop 1s ease forwards;
+      }
+      #endScreen {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        overflow: hidden;
+        background: linear-gradient(145deg, #dff5ff 0 38%, #ffd3b6 38% 66%, #cbb9ff 66% 100%);
+      }
+      .endCard {
+        position: relative;
+        z-index: 3;
+        width: 720px;
+        max-width: 94vw;
+        max-height: 92vh;
+        padding: 22px 25px 25px;
+        border: 6px solid #5b3a78;
+        border-radius: 34px;
+        background: rgba(255, 253, 248, 0.98);
+        text-align: center;
+        box-shadow:
+          0 12px 0 rgba(91, 58, 120, 0.22),
+          0 20px 40px rgba(66, 48, 84, 0.18);
+      }
+      .endCard h2 {
+        margin: 0 0 7px;
+        color: #3a8d8c;
+        font-size: 64px;
+        font-size: clamp(42px, 8vw, 72px);
+        line-height: 1;
+      }
+      .endCard p {
+        margin: 5px 0 18px;
+        color: #5b3a78;
+        font-size: 25px;
+        font-size: clamp(18px, 3vw, 28px);
+        font-weight: 900;
+      }
+      .endBins {
+        height: 190px;
+        max-height: 27vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 8px;
+      }
+      .endBins img {
+        width: 30%;
+        height: 100%;
+        object-fit: contain;
+        animation: endBounce 1s ease-in-out infinite alternate;
+      }
+      .endBins img:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .endBins img:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      #playAgainBtn {
+        margin-top: 10px;
+        min-width: 200px;
+        padding: 13px 28px;
+        border: 4px solid #5b3a78;
+        border-radius: 22px;
+        background: linear-gradient(#ffd166, #ff9f7f);
+        color: #4b365f;
+        font-size: 28px;
+        font-size: clamp(22px, 3.7vw, 31px);
+        font-weight: 1000;
+        box-shadow: 0 7px 0 #c26b71;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      #playAgainBtn:active {
+        transform: translateY(5px);
+        box-shadow: 0 2px 0 #c26b71;
+      }
+      #confettiCanvas {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      @keyframes gentleFloat {
+        from {
+          transform: translateY(2px) scale(0.98);
+        }
+        to {
+          transform: translateY(-5px) scale(1.02);
+        }
+      }
+      @keyframes giggle {
+        0%,
+        100% {
+          transform: translateX(0) rotate(0);
+        }
+        20% {
+          transform: translateX(-8px) rotate(-3deg);
+        }
+        40% {
+          transform: translateX(8px) rotate(3deg);
+        }
+        60% {
+          transform: translateX(-6px) rotate(-2deg);
+        }
+        80% {
+          transform: translateX(6px) rotate(2deg);
+        }
+      }
+      @keyframes answerGlow {
+        from {
+          transform: scale(1);
+          box-shadow:
+            0 0 0 0 rgba(255, 185, 0, 0.35),
+            0 8px 0 #d59a22;
+        }
+        to {
+          transform: scale(1.035);
+          box-shadow:
+            0 0 0 12px rgba(255, 185, 0, 0.13),
+            0 8px 0 #d59a22;
+        }
+      }
+      @keyframes tickPop {
+        0% {
+          transform: scale(0.3) rotate(-20deg);
+          opacity: 0;
+        }
+        75% {
+          transform: scale(1.12) rotate(5deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1) rotate(0);
+          opacity: 1;
+        }
+      }
+      @keyframes feedbackPop {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.55);
+        }
+        20%,
+        78% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(1.12);
+        }
+      }
+      @keyframes endBounce {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-8px);
+        }
+      }
+      @media (max-height: 620px) {
+        .topBar {
+          min-height: 12%;
+        }
+        .gameCard {
+          max-height: 86%;
+          padding: 8px 16px 10px;
+          grid-template-rows: auto minmax(90px, 1fr) auto minmax(105px, 0.95fr);
+          gap: 5px;
+        }
+        .objectCard {
+          width: 190px;
+          height: 112px;
+          padding: 7px;
+        }
+        .binOption {
+          min-height: 98px;
+          padding: 5px;
+        }
+        .binOption img {
+          max-height: 75px;
+        }
+        .binLabel {
+          font-size: 14px;
+          padding: 2px 10px;
+        }
+        .subtitle {
+          display: none;
+        }
+      }
+      @media (max-width: 600px) and (orientation: portrait) {
+        .topBar {
+          width: 100%;
+          grid-template-columns: 1fr auto;
+          min-height: 12%;
+        }
+        .titleWrap {
+          grid-column: 1;
+          text-align: left;
+          padding-left: 4px;
+        }
+        .progressBox {
+          grid-column: 2;
+        }
+        h1 {
+          font-size: 31px;
+          font-size: clamp(27px, 8vw, 36px);
+        }
+        .gameCard {
+          width: 98%;
+          max-height: 86%;
+          padding: 10px 10px 13px;
+          grid-template-rows: auto minmax(118px, 0.9fr) auto minmax(
+              250px,
+              1.4fr
+            );
+        }
+        #options {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .binOption {
+          min-height: 72px;
+          flex-direction: row;
+          justify-content: center;
+          padding: 5px 10px;
+        }
+        .binImageWrap {
+          height: 62px;
+          flex: 0 0 62%;
+        }
+        .binOption img {
+          max-height: 62px;
+        }
+        .binLabel {
+          margin: 0 0 0 8px;
+          min-width: 84px;
+        }
+        .tickMark {
+          width: 38px;
+          height: 38px;
+          font-size: 23px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splashScreen" aria-label="Logo screen">
+      <img id="splashLogo" src="assets/innovine-logo.png" alt="Innovine logo" />
+    </div>
+    <main id="gameScreen" aria-live="polite">
+      <div class="decor cloud"></div>
+      <div class="decor sun"></div>
+      <header class="topBar">
+        <div class="titleWrap">
+          <h1>Size Seriation</h1>
+          <div class="subtitle">Sort each object by its size.</div>
+        </div>
+        <div class="progressBox">
+          <span id="questionNumber">1</span> /
+          <span id="totalQuestions">9</span>
+        </div>
+      </header>
+      <section class="gameCard">
+        <p id="instruction">Place Me Into The Correct Bin!</p>
+        <div class="objectStage">
+          <div class="objectCard">
+            <img id="questionImage" src="" alt="Object to sort" />
+          </div>
+        </div>
+        <div class="promptText">Tap the correct bin.</div>
+        <div id="options" aria-label="Size bins">
+          <button
+            class="binOption"
+            type="button"
+            data-size="big"
+            aria-label="Big bin"
+          >
+            <div class="binImageWrap">
+              <img src="assets/big-bin.png" alt="Big bin" />
+            </div>
+            <div class="binLabel">BIG</div>
+          </button>
+          <button
+            class="binOption"
+            type="button"
+            data-size="medium"
+            aria-label="Medium bin"
+          >
+            <div class="binImageWrap">
+              <img src="assets/medium-bin.png" alt="Medium bin" />
+            </div>
+            <div class="binLabel">MEDIUM</div>
+          </button>
+          <button
+            class="binOption"
+            type="button"
+            data-size="small"
+            aria-label="Small bin"
+          >
+            <div class="binImageWrap">
+              <img src="assets/small-bin.png" alt="Small bin" />
+            </div>
+            <div class="binLabel">SMALL</div>
+          </button>
+        </div>
+      </section>
+    </main>
+    <div id="feedback" role="status">✅ Good Job!</div>
+    <section id="endScreen" aria-label="Game complete">
+      <canvas id="confettiCanvas"></canvas>
+      <div class="endCard">
+        <h2>Good Job!</h2>
+        <p>You sorted all the objects into the correct bins!</p>
+        <div class="endBins" aria-hidden="true">
+          <img src="assets/big-bin.png" alt="" /><img
+            src="assets/medium-bin.png"
+            alt=""
+          /><img src="assets/small-bin.png" alt="" />
+        </div>
+        <button id="playAgainBtn" type="button">▶ Play Again</button>
+      </div>
+    </section>
+    <audio
+      id="clapsSound"
+      src="assets/claps.mp3"
+      preload="auto"
+      playsinline
+    ></audio
+    ><audio
+      id="wrongSound"
+      src="assets/wrong.mp3"
+      preload="auto"
+      playsinline
+    ></audio>
+    <script>
+      (function () {
+        "use strict";
+        var NEXT_QUESTION_DELAY = 1050;
+        var QUESTION_BANK = [
+          { image: "assets/big-ball.png", alt: "Big ball", answer: "big" },
+          {
+            image: "assets/big-lolipop.png",
+            alt: "Big lollipop",
+            answer: "big",
+          },
+          { image: "assets/big-star.png", alt: "Big star", answer: "big" },
+          {
+            image: "assets/medium-ball.png",
+            alt: "Medium ball",
+            answer: "medium",
+          },
+          {
+            image: "assets/medium-lolipop.png",
+            alt: "Medium lollipop",
+            answer: "medium",
+          },
+          {
+            image: "assets/medium-star.png",
+            alt: "Medium star",
+            answer: "medium",
+          },
+          {
+            image: "assets/small-ball.png",
+            alt: "Small ball",
+            answer: "small",
+          },
+          {
+            image: "assets/small-lolipop.png",
+            alt: "Small lollipop",
+            answer: "small",
+          },
+          {
+            image: "assets/small-star.png",
+            alt: "Small star",
+            answer: "small",
+          },
+        ];
+        var splashScreen = document.getElementById("splashScreen"),
+          gameScreen = document.getElementById("gameScreen"),
+          endScreen = document.getElementById("endScreen"),
+          questionImage = document.getElementById("questionImage"),
+          questionNumber = document.getElementById("questionNumber"),
+          totalQuestions = document.getElementById("totalQuestions"),
+          optionsBox = document.getElementById("options"),
+          feedback = document.getElementById("feedback"),
+          playAgainBtn = document.getElementById("playAgainBtn"),
+          clapsSound = document.getElementById("clapsSound"),
+          wrongSound = document.getElementById("wrongSound");
+        var currentQuestions = [],
+          currentIndex = 0,
+          wrongAttempts = 0,
+          answered = false,
+          nextTimer = null;
+        function shuffle(array) {
+          var copy = array.slice(),
+            i,
+            j,
+            temp;
+          for (i = copy.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            temp = copy[i];
+            copy[i] = copy[j];
+            copy[j] = temp;
+          }
+          return copy;
+        }
+        function safePlay(audioElement) {
+          try {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+            var playPromise = audioElement.play();
+            if (playPromise && typeof playPromise.catch === "function") {
+              playPromise.catch(function () {});
+            }
+          } catch (error) {}
+        }
+        function resetBins() {
+          var buttons = optionsBox.getElementsByClassName("binOption"),
+            i;
+          for (i = 0; i < buttons.length; i++) {
+            buttons[i].disabled = false;
+            buttons[i].className = "binOption";
+            var oldTick = buttons[i].querySelector(".tickMark");
+            if (oldTick) {
+              buttons[i].removeChild(oldTick);
+            }
+          }
+        }
+        function showQuestion() {
+          var question = currentQuestions[currentIndex];
+          wrongAttempts = 0;
+          answered = false;
+          resetBins();
+          questionNumber.textContent = currentIndex + 1;
+          questionImage.src = question.image;
+          questionImage.alt = question.alt;
+        }
+        function glowCorrectBin(correctAnswer) {
+          var buttons = optionsBox.getElementsByClassName("binOption"),
+            i;
+          for (i = 0; i < buttons.length; i++) {
+            if (
+              buttons[i].getAttribute("data-size") === correctAnswer &&
+              buttons[i].className.indexOf("hintGlow") === -1
+            ) {
+              buttons[i].className += " hintGlow";
+            }
+          }
+        }
+        function removeWrongEffect(button) {
+          window.setTimeout(function () {
+            button.className = button.className.replace(/\s?wrong/g, "");
+          }, 450);
+        }
+        function disableBins() {
+          var buttons = optionsBox.getElementsByClassName("binOption"),
+            i;
+          for (i = 0; i < buttons.length; i++) {
+            buttons[i].disabled = true;
+          }
+        }
+        function addTick(button) {
+          var tick = document.createElement("div");
+          tick.className = "tickMark";
+          tick.textContent = "✓";
+          button.appendChild(tick);
+        }
+        function showGoodJob() {
+          feedback.className = "";
+          void feedback.offsetWidth;
+          feedback.className = "show";
+        }
+        function checkAnswer(button) {
+          if (answered) {
+            return;
+          }
+          var selectedAnswer = button.getAttribute("data-size"),
+            correctAnswer = currentQuestions[currentIndex].answer;
+          if (selectedAnswer === correctAnswer) {
+            answered = true;
+            disableBins();
+            button.className = "binOption correct";
+            addTick(button);
+            showGoodJob();
+            safePlay(clapsSound);
+            nextTimer = window.setTimeout(function () {
+              currentIndex++;
+              if (currentIndex < currentQuestions.length) {
+                showQuestion();
+              } else {
+                showEndScreen();
+              }
+            }, NEXT_QUESTION_DELAY);
+          } else {
+            wrongAttempts++;
+            safePlay(wrongSound);
+            button.className =
+              button.className.replace(/\s?wrong/g, "") + " wrong";
+            removeWrongEffect(button);
+            if (wrongAttempts >= 2) {
+              glowCorrectBin(correctAnswer);
+            }
+          }
+        }
+        (function addBinEvents() {
+          var buttons = optionsBox.getElementsByClassName("binOption"),
+            i;
+          for (i = 0; i < buttons.length; i++) {
+            buttons[i].onclick = function () {
+              checkAnswer(this);
+            };
+          }
+        })();
+        function startGame() {
+          if (nextTimer) {
+            window.clearTimeout(nextTimer);
+            nextTimer = null;
+          }
+          stopConfetti();
+          endScreen.style.display = "none";
+          gameScreen.style.display = "flex";
+          currentQuestions = shuffle(QUESTION_BANK);
+          currentIndex = 0;
+          wrongAttempts = 0;
+          answered = false;
+          totalQuestions.textContent = currentQuestions.length;
+          showQuestion();
+        }
+        function showEndScreen() {
+          gameScreen.style.display = "none";
+          endScreen.style.display = "flex";
+          safePlay(clapsSound);
+          startConfetti();
+        }
+        playAgainBtn.onclick = function () {
+          startGame();
+        };
+        var canvas = document.getElementById("confettiCanvas"),
+          ctx = canvas.getContext("2d"),
+          confettiPieces = [],
+          confettiFrame = null,
+          confettiRunning = false,
+          confettiColors = [
+            "#ffcf2f",
+            "#ff6b6b",
+            "#4ecdc4",
+            "#7a77ff",
+            "#ff8fd8",
+            "#59c75b",
+          ];
+        function resizeCanvas() {
+          var ratio = window.devicePixelRatio || 1;
+          canvas.width = Math.floor(window.innerWidth * ratio);
+          canvas.height = Math.floor(window.innerHeight * ratio);
+          canvas.style.width = window.innerWidth + "px";
+          canvas.style.height = window.innerHeight + "px";
+          ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        }
+        function makeConfettiPiece() {
+          return {
+            x: Math.random() * window.innerWidth,
+            y: -20 - Math.random() * window.innerHeight,
+            w: 6 + Math.random() * 7,
+            h: 8 + Math.random() * 10,
+            speed: 2.1 + Math.random() * 3.2,
+            drift: -1.2 + Math.random() * 2.4,
+            rotation: Math.random() * Math.PI,
+            spin: -0.12 + Math.random() * 0.24,
+            color:
+              confettiColors[Math.floor(Math.random() * confettiColors.length)],
+          };
+        }
+        function drawConfetti() {
+          var i, piece;
+          if (!confettiRunning) {
+            return;
+          }
+          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          for (i = 0; i < confettiPieces.length; i++) {
+            piece = confettiPieces[i];
+            piece.y += piece.speed;
+            piece.x += piece.drift;
+            piece.rotation += piece.spin;
+            if (piece.y > window.innerHeight + 25) {
+              confettiPieces[i] = makeConfettiPiece();
+              confettiPieces[i].y = -20;
+              piece = confettiPieces[i];
+            }
+            ctx.save();
+            ctx.translate(piece.x, piece.y);
+            ctx.rotate(piece.rotation);
+            ctx.fillStyle = piece.color;
+            ctx.fillRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h);
+            ctx.restore();
+          }
+          confettiFrame = window.requestAnimationFrame(drawConfetti);
+        }
+        function startConfetti() {
+          var i;
+          resizeCanvas();
+          confettiPieces = [];
+          for (i = 0; i < 95; i++) {
+            confettiPieces.push(makeConfettiPiece());
+          }
+          confettiRunning = true;
+          drawConfetti();
+        }
+        function stopConfetti() {
+          confettiRunning = false;
+          if (confettiFrame) {
+            window.cancelAnimationFrame(confettiFrame);
+            confettiFrame = null;
+          }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        window.addEventListener("resize", function () {
+          if (confettiRunning) {
+            resizeCanvas();
+          }
+        });
+        window.setTimeout(function () {
+          splashScreen.style.display = "none";
+          startGame();
+        }, 2000);
+      })();
+    </script>
+  </body>
+</html>
