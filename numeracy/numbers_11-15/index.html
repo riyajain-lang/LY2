@@ -2,268 +2,300 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preschool Counting Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Numbers 11–15</title>
 <style>
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Fredoka One', cursive;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fff;
-    overflow: hidden;
-}
-
-#game-container {
-    width: 100%;
-    max-width: 900px;
-    height: 95%;
-    max-height: 900px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-    background: linear-gradient(135deg, #fff8e1, #ffe0f0);
-    border-radius: 25px;
-    padding: 25px;
-    box-sizing: border-box;
-    border: 15px solid #fff;
-    box-shadow: 0 0 0 20px #FFB6C1 inset, 0 0 0 35px #FFD700 inset;
-}
-
-.slide {
-    display: none;
-    width: 100%;
-    height: 100%;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-#instructions {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 20px;
-    padding: 12px 25px;
-    border: 4px solid #008000;
-    border-radius: 15px;
-    background-color: #e0ffe0;
-}
-
-#slide-1-content {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
-    flex-grow: 1;
-}
-
-#question-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    max-width: 60%;
-    margin-left: 10px;
-}
-
-#question-container img {
-    width: 80px;
-    height: 80px;
-    border: 2px solid #FFB6C1;
-    border-radius: 15px;
-    padding: 4px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
-}
-
-.options {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 35%;
-}
-
-.option-btn {
-    padding: 28px 32px;
-    font-size: 2em;
-    margin: 14px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    background-color: #FFCCFF;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.option-btn:hover {
-    transform: scale(1.1) rotate(-2deg);
-    box-shadow: 0 0 20px rgba(255,192,203,0.6);
-}
-
-.correct {
-    background-color: #8BC34A !important;
-    color: #fff;
-}
-
-.wrong {
-    animation: wiggle 0.3s;
-}
-
-@keyframes wiggle {
-    0% { transform: rotate(0deg);}
-    25% { transform: rotate(5deg);}
-    50% { transform: rotate(-5deg);}
-    75% { transform: rotate(5deg);}
-    100% { transform: rotate(0deg);}
-}
-
-#feedback {
-    font-size: 1.6em;
-    margin-top: 18px;
-    color: #333;
-}
-
-#slide-end {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#play-again {
-    display: block;
-    padding: 22px 32px;
-    font-size: 1.8em;
-    margin-top: 20px;
-    border: none;
-    border-radius: 18px;
-    background-color: #1CB6BB;
-    color: #fff;
-    cursor: pointer;
-}
+:root{--ink:#27324a;--muted:#6e7890;--purple:#6860e8;--purple2:#5148c9;--yellow:#ffc857;--green:#3dbb6b;--red:#ec5e68;--line:#e6e9f3;--soft:#f7f8fd;--shadow:0 12px 30px rgba(55,65,110,.14)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:transparent}body{min-height:100vh;min-height:100dvh;font-family:"Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif;color:var(--ink);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-text-size-adjust:100%}button{font:inherit;touch-action:manipulation}button,img{-webkit-user-drag:none}
+#app{position:relative;width:min(100%,980px);height:100vh;height:100dvh;min-height:420px;margin:auto;overflow:hidden;background:#fff}.screen{position:absolute;inset:0;display:none}.screen.active{display:flex}
+#splash,#start,#end{align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}.card{display:flex;flex-direction:column;align-items:center;width:min(92vw,520px);max-height:94dvh;padding:clamp(22px,6vw,46px);text-align:center;border:2px solid var(--line);border-radius:28px;background:#fff;box-shadow:var(--shadow)}
+.logo{display:block;width:min(70vw,290px);max-height:180px;object-fit:contain}.dots{display:flex;gap:9px;margin-top:24px}.dots i{width:11px;height:11px;border-radius:50%;background:var(--purple);animation:bounce .9s infinite ease-in-out}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-8px);opacity:1}}
+.bubbles{display:flex;gap:clamp(6px,2vw,11px);margin-bottom:18px}.bubbles span{display:grid;place-items:center;width:clamp(42px,12vw,58px);aspect-ratio:1;border-radius:50%;color:#fff;background:var(--purple);font-size:clamp(1.1rem,5vw,1.65rem);font-weight:900;box-shadow:0 7px 0 rgba(81,72,201,.18)}.bubbles span:nth-child(even){color:var(--ink);background:var(--yellow);box-shadow:0 7px 0 rgba(255,200,87,.25)}
+h1{margin:0 0 10px;font-size:clamp(2rem,8vw,3.1rem);line-height:1.05}.lead{max-width:420px;margin:0 0 24px;color:var(--muted);font-size:clamp(1rem,3.8vw,1.24rem);font-weight:700;line-height:1.45}.main-btn{min-width:min(100%,240px);min-height:58px;padding:14px 28px;border:0;border-radius:18px;color:#fff;background:var(--purple);font-size:clamp(1.15rem,4.5vw,1.45rem);font-weight:900;cursor:pointer;box-shadow:0 8px 0 var(--purple2)}.main-btn:active{transform:translateY(5px);box-shadow:0 3px 0 var(--purple2)}
+#game{flex-direction:column;padding:max(9px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(9px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left));background:#fff}.shell{display:flex;flex:1;min-height:0;flex-direction:column;width:100%;padding:clamp(10px,2.5vw,20px);border:2px solid var(--line);border-radius:clamp(18px,4vw,28px);background:var(--soft);box-shadow:var(--shadow)}.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:clamp(7px,1.4vh,12px)}.pill,.q-label{padding:7px 12px;border-radius:999px;font-size:clamp(.78rem,3vw,1rem);font-weight:900;white-space:nowrap}.pill{color:var(--purple2);background:#ebeaff}.q-label{color:var(--muted);background:#fff;border:1px solid var(--line)}.track{height:9px;margin-bottom:clamp(7px,1.4vh,12px);overflow:hidden;border-radius:999px;background:#e3e6f0}.fill{width:0;height:100%;border-radius:inherit;background:var(--purple);transition:width .25s}.instruction{margin:0 0 clamp(7px,1.4vh,12px);text-align:center;font-size:clamp(1rem,3.9vw,1.42rem);font-weight:900;line-height:1.2}.play-area{display:grid;grid-template-rows:minmax(0,1fr) auto;flex:1;min-height:0;gap:clamp(8px,1.6vh,14px)}.object-panel{display:flex;min-height:0;align-items:center;justify-content:center;padding:clamp(6px,1.8vw,14px);overflow:hidden;border:2px solid var(--line);border-radius:20px;background:#fff}#object-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(4px,1.35vw,10px);width:min(100%,590px);max-height:100%;margin:auto}.object{display:grid;place-items:center;min-width:0;min-height:0;aspect-ratio:1;overflow:hidden;border:1px solid #edf0f7;border-radius:clamp(8px,2vw,14px);background:#fbfcff;animation:pop .25s both}.object img{width:82%;height:82%;object-fit:contain}.fallback{display:none;font-size:clamp(1.3rem,7vw,3.2rem);line-height:1}@keyframes pop{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
+.answer-panel{display:flex;flex-direction:column;gap:7px}#options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(7px,2vw,12px)}.answer{display:grid;place-items:center;min-height:clamp(54px,10vh,76px);padding:7px;border:3px solid transparent;border-radius:clamp(14px,3vw,20px);color:var(--ink);background:#fff;font-size:clamp(1.65rem,8vw,2.7rem);font-weight:900;cursor:pointer;box-shadow:0 6px 0 #dfe2ee}.answer:active:not(:disabled){transform:translateY(4px);box-shadow:0 2px 0 #dfe2ee}.answer.correct{color:#fff;border-color:#23984f;background:var(--green);box-shadow:0 6px 0 #23984f;animation:pulse .4s}.answer.wrong{color:#ad2632;border-color:var(--red);background:#fff0f1;box-shadow:0 6px 0 #efb8bc;animation:wiggle .3s}.answer.dim{opacity:.45}.answer:disabled{cursor:default}#feedback{display:grid;place-items:center;min-height:clamp(31px,5vh,42px);padding:4px 8px;border-radius:12px;text-align:center;color:var(--muted);font-size:clamp(.94rem,3.6vw,1.18rem);font-weight:900;line-height:1.15}#feedback.good{color:#227a42;background:#eaf8ef}#feedback.bad{color:#ad2632;background:#fff0f1}@keyframes wiggle{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px) rotate(-2deg)}50%{transform:translateX(7px) rotate(2deg)}75%{transform:translateX(-4px)}}@keyframes pulse{50%{transform:scale(1.08)}}
+.trophy{font-size:clamp(4rem,20vw,7rem);line-height:1}.score{display:grid;place-items:center;min-width:175px;min-height:82px;margin:4px 0 15px;border-radius:20px;color:var(--purple2);background:#ebeaff;font-size:clamp(1.35rem,5vw,1.8rem);font-weight:900}.end-text{margin:0 0 22px;color:var(--muted);font-size:clamp(1rem,4vw,1.25rem);font-weight:800}.confetti-layer{pointer-events:none;position:absolute;inset:0;overflow:hidden;z-index:20}.confetti{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;animation:fall var(--time) linear forwards}@keyframes fall{to{transform:translate(var(--drift),110dvh) rotate(720deg)}}
+@media (min-width:700px) and (min-height:540px){.play-area{grid-template-columns:minmax(0,1fr) minmax(170px,27%);grid-template-rows:minmax(0,1fr)}.answer-panel{justify-content:center}#options{grid-template-columns:1fr}.answer{min-height:88px}#feedback{min-height:54px}.object-panel{padding:18px}}
+@media (orientation:landscape) and (max-height:560px){#game{padding:6px}.shell{padding:8px 12px;border-radius:18px}.top{margin-bottom:5px}.track{height:7px;margin-bottom:5px}.instruction{margin-bottom:6px;font-size:clamp(.9rem,2.4vw,1.12rem)}.play-area{grid-template-columns:minmax(0,1fr) minmax(145px,27%);grid-template-rows:minmax(0,1fr);gap:9px}.object-panel{padding:6px}.answer-panel{justify-content:center}#options{grid-template-columns:1fr;gap:6px}.answer{min-height:48px;font-size:clamp(1.35rem,5vh,2rem);box-shadow:0 4px 0 #dfe2ee}#feedback{min-height:30px;font-size:.88rem}.card{padding:18px}.bubbles{margin-bottom:9px}.lead{margin-bottom:14px}}
+@media (max-width:355px){.pill{display:none}.shell{padding:9px}.answer{min-height:52px}.object-panel{padding:5px}#object-grid{gap:3px}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-
-<div id="game-container">
-    <!-- Slide 0: Logo -->
-    <div class="slide" id="slide-0">
-        <img src="assets/innovine-logo.png" alt="Innovine Logo" style="max-width:300px;">
+<main id="app">
+  <section id="splash" class="screen active" aria-label="Loading">
+    <div class="card">
+      <img class="logo" src="assets/innovine-logo.png" alt="Innovine">
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
     </div>
+  </section>
 
-    <!-- Slide 1: Questions -->
-    <div class="slide" id="slide-1">
-        <div id="instructions">Count the objects and tap on the correct number.</div>
-        <div id="slide-1-content">
-            <div id="question-container"></div>
-            <div class="options" id="options-container"></div>
+  <section id="start" class="screen">
+    <div class="card">
+      <div class="bubbles" aria-hidden="true"><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span></div>
+      <h1>Count and Choose!</h1>
+      <p class="lead">Count the objects carefully and tap the correct number.</p>
+      <button id="start-btn" class="main-btn" type="button">Start Game</button>
+    </div>
+  </section>
+
+  <section id="game" class="screen" aria-label="Counting game">
+    <div class="shell">
+      <div class="top">
+        <div class="pill">Numbers 11–15</div>
+        <div id="q-label" class="q-label">Question 1 of 10</div>
+      </div>
+      <div class="track" aria-hidden="true"><div id="progress" class="fill"></div></div>
+      <p class="instruction">Count the objects and tap the correct number.</p>
+      <div class="play-area">
+        <div class="object-panel"><div id="object-grid" aria-label="Objects to count"></div></div>
+        <div class="answer-panel">
+          <div id="options" aria-label="Answer choices"></div>
+          <div id="feedback" role="status" aria-live="polite"></div>
         </div>
-        <div id="feedback"></div>
+      </div>
     </div>
+  </section>
 
-    <!-- End Slide -->
-    <div class="slide" id="slide-end">
-        <div id="feedback">🎉 Good Job! 🎉</div>
-        <button id="play-again">Play Again</button>
+  <section id="end" class="screen">
+    <div class="card">
+      <div class="trophy" aria-hidden="true">🏆</div>
+      <h1>Wonderful Work!</h1>
+      <div id="score" class="score">10 / 10</div>
+      <p id="end-text" class="end-text">You counted beautifully!</p>
+      <button id="again-btn" class="main-btn" type="button">Play Again</button>
     </div>
-</div>
+  </section>
+  <div id="confetti" class="confetti-layer" aria-hidden="true"></div>
+</main>
 
-<audio id="audio-correct" src="assets/correct.mp3"></audio>
-<audio id="audio-wrong" src="assets/wrong.mp3"></audio>
-<audio id="audio-clap" src="assets/freesound_community-claps-44774.mp3"></audio>
+<audio id="correct-audio" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrong-audio" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clap-audio" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-const slides = document.querySelectorAll('.slide');
-const questionContainer = document.getElementById('question-container');
-const optionsContainer = document.getElementById('options-container');
-const feedbackEl = document.getElementById('feedback');
-const playAgainBtn = document.getElementById('play-again');
+(() => {
+  "use strict";
 
-const correctAudio = document.getElementById('audio-correct');
-const wrongAudio = document.getElementById('audio-wrong');
-const clapAudio = document.getElementById('audio-clap');
+  const SPLASH_TIME = 5000;
+  const NEXT_DELAY = 950;
+  const REVEAL_DELAY = 1250;
 
-let currentSlide = 0;
-let attempts = 0;
+  const questions = [
+    { image:"assets/apple.png",     emoji:"🍎", answer:11, options:[11,12,13] },
+    { image:"assets/butterfly.png", emoji:"🦋", answer:12, options:[11,12,14] },
+    { image:"assets/circle.png",    emoji:"🔵", answer:13, options:[11,12,13] },
+    { image:"assets/cookie.png",    emoji:"🍪", answer:14, options:[13,14,15] },
+    { image:"assets/elephant.png",  emoji:"🐘", answer:15, options:[13,14,15] },
+    { image:"assets/nest.png",      emoji:"🪺", answer:11, options:[11,13,15] },
+    { image:"assets/octopus.png",   emoji:"🐙", answer:12, options:[11,12,14] },
+    { image:"assets/horse.png",     emoji:"🐴", answer:13, options:[12,13,15] },
+    { image:"assets/cookie.png",    emoji:"🍪", answer:14, options:[11,14,15] },
+    { image:"assets/apple.png",     emoji:"🍎", answer:15, options:[12,14,15] }
+  ];
 
-// 8 jumbled questions
-const questions = [
-    {img: "assets/apple.png", answer: "11", options: ["11","12","13"]},
-    {img: "assets/butterfly.png", answer: "12", options: ["12","14","11"]},
-    {img: "assets/circle.png", answer: "13", options: ["11","13","12"]},
-    {img: "assets/cookie.png", answer: "14", options: ["14","15","13"]},
-    {img: "assets/elephant.png", answer: "15", options: ["14","15","13"]},
-    {img: "assets/nest.png", answer: "11", options: ["11","13","12"]},
-    {img: "assets/octopus.png", answer: "12", options: ["12","11","14"]},
-    {img: "assets/horse.png", answer: "13", options: ["13","12","15"]}
-];
+  const screens = [...document.querySelectorAll(".screen")];
+  const objectGrid = document.getElementById("object-grid");
+  const optionsBox = document.getElementById("options");
+  const feedback = document.getElementById("feedback");
+  const progress = document.getElementById("progress");
+  const qLabel = document.getElementById("q-label");
+  const scoreBox = document.getElementById("score");
+  const endText = document.getElementById("end-text");
+  const confettiLayer = document.getElementById("confetti");
+  const correctAudio = document.getElementById("correct-audio");
+  const wrongAudio = document.getElementById("wrong-audio");
+  const clapAudio = document.getElementById("clap-audio");
 
-function shuffleArray(array){ return array.sort(() => Math.random()-0.5); }
-let shuffledQuestions = shuffleArray([...questions]);
+  let round = [];
+  let index = 0;
+  let attempts = 0;
+  let score = 0;
+  let locked = false;
+  let moveTimer = null;
 
-function showSlide(index){ slides.forEach(s=>s.style.display='none'); slides[index].style.display='flex'; }
-
-function startGame(){
-    currentSlide=1; attempts=0; shuffledQuestions=shuffleArray([...questions]);
-    showSlide(currentSlide); loadQuestion();
-}
-
-function loadQuestion(){
-    attempts=0; feedbackEl.innerText='';
-    const q=shuffledQuestions[currentSlide-1];
-    questionContainer.innerHTML='';
-    const count=parseInt(q.answer);
-    for(let i=0;i<count;i++){
-        const img=document.createElement('img'); img.src=q.img;
-        questionContainer.appendChild(img);
+  function shuffle(items) {
+    const copy = [...items];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
     }
-    optionsContainer.innerHTML='';
-    shuffleArray(q.options).forEach(opt=>{
-        const btn=document.createElement('button'); btn.classList.add('option-btn'); btn.innerText=opt;
-        btn.addEventListener('click',()=>checkAnswer(opt,btn));
-        optionsContainer.appendChild(btn);
+    return copy;
+  }
+
+  function show(id) {
+    screens.forEach(screen => screen.classList.toggle("active", screen.id === id));
+  }
+
+  function play(audio) {
+    if (!audio) return;
+    try {
+      audio.pause();
+      audio.currentTime = 0;
+      const promise = audio.play();
+      if (promise && typeof promise.catch === "function") promise.catch(() => {});
+    } catch (_) {}
+  }
+
+  function vibrate(pattern) {
+    if (navigator.vibrate) navigator.vibrate(pattern);
+  }
+
+  function startGame() {
+    clearTimeout(moveTimer);
+    round = shuffle(questions);
+    index = 0;
+    attempts = 0;
+    score = 0;
+    locked = false;
+    confettiLayer.innerHTML = "";
+    show("game");
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    attempts = 0;
+    locked = false;
+    feedback.textContent = "";
+    feedback.className = "";
+    objectGrid.innerHTML = "";
+    optionsBox.innerHTML = "";
+
+    const question = round[index];
+    qLabel.textContent = `Question ${index + 1} of ${round.length}`;
+    progress.style.width = `${((index + 1) / round.length) * 100}%`;
+
+    for (let i = 0; i < question.answer; i++) {
+      const cell = document.createElement("div");
+      cell.className = "object";
+      cell.style.animationDelay = `${Math.min(i * 22, 260)}ms`;
+
+      const img = document.createElement("img");
+      img.src = question.image;
+      img.alt = "";
+      img.decoding = "async";
+      img.draggable = false;
+
+      const fallback = document.createElement("span");
+      fallback.className = "fallback";
+      fallback.textContent = question.emoji;
+
+      img.addEventListener("error", () => {
+        img.style.display = "none";
+        fallback.style.display = "block";
+      }, { once:true });
+
+      cell.append(img, fallback);
+      objectGrid.appendChild(cell);
+    }
+
+    shuffle(question.options).forEach(number => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "answer";
+      button.textContent = number;
+      button.setAttribute("aria-label", `Answer ${number}`);
+      button.addEventListener("click", () => checkAnswer(number, button));
+      optionsBox.appendChild(button);
     });
-}
+  }
 
-function checkAnswer(selected,btn){
-    const q=shuffledQuestions[currentSlide-1];
-    if(selected===q.answer){
-        btn.classList.add('correct'); feedbackEl.innerText='Good Job!';
-        correctAudio.play(); clapAudio.play();
-        setTimeout(()=>nextQuestion(),1000);
-    } else {
-        attempts++; btn.classList.add('wrong'); wrongAudio.play();
-        setTimeout(()=>btn.classList.remove('wrong'),300);
-        if(attempts>=2){
-            const correctBtn=Array.from(optionsContainer.children).find(b=>b.innerText===q.answer);
-            correctBtn.classList.add('correct');
-        }
+  function checkAnswer(selected, button) {
+    if (locked || button.disabled) return;
+    const question = round[index];
+
+    if (selected === question.answer) {
+      locked = true;
+      score += 1;
+      button.classList.add("correct");
+      disableAnswers(button);
+      feedback.textContent = "Good job!";
+      feedback.className = "good";
+      play(correctAudio);
+      vibrate(35);
+      moveTimer = setTimeout(nextQuestion, NEXT_DELAY);
+      return;
     }
-}
 
-function nextQuestion(){
-    if(currentSlide<shuffledQuestions.length){ currentSlide++; loadQuestion(); }
-    else { endGame(); }
-}
+    attempts += 1;
+    button.classList.add("wrong");
+    button.disabled = true;
+    play(wrongAudio);
+    vibrate([45, 35, 45]);
 
-function endGame(){
-    showSlide(slides.length-1);
-    confetti({particleCount:150,spread:70,origin:{y:0.6}});
-    clapAudio.play();
-}
+    if (attempts < 2) {
+      feedback.textContent = "Try once more!";
+      feedback.className = "bad";
+      return;
+    }
 
-playAgainBtn.addEventListener('click',()=>startGame());
+    locked = true;
+    const correctButton = [...optionsBox.children]
+      .find(btn => Number(btn.textContent) === question.answer);
+    if (correctButton) correctButton.classList.add("correct");
+    disableAnswers(correctButton);
+    feedback.textContent = `The correct answer is ${question.answer}.`;
+    feedback.className = "bad";
+    moveTimer = setTimeout(nextQuestion, REVEAL_DELAY);
+  }
 
-showSlide(0);
-setTimeout(()=>startGame(),2000);
+  function disableAnswers(correctButton) {
+    [...optionsBox.children].forEach(button => {
+      button.disabled = true;
+      if (button !== correctButton && !button.classList.contains("wrong")) {
+        button.classList.add("dim");
+      }
+    });
+  }
+
+  function nextQuestion() {
+    index += 1;
+    if (index < round.length) loadQuestion();
+    else endGame();
+  }
+
+  function endGame() {
+    show("end");
+    scoreBox.textContent = `${score} / ${round.length}`;
+    const ratio = score / round.length;
+    endText.textContent = ratio === 1
+      ? "Perfect counting! You are a number star!"
+      : ratio >= 0.7
+        ? "Great counting! Keep practising!"
+        : "Nice effort! Let us count once more!";
+    play(clapAudio);
+    makeConfetti();
+  }
+
+  function makeConfetti() {
+    confettiLayer.innerHTML = "";
+    const colours = ["#6860e8", "#ffc857", "#3dbb6b", "#ec5e68", "#3da5d9"];
+    for (let i = 0; i < 90; i++) {
+      const piece = document.createElement("i");
+      piece.className = "confetti";
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.background = colours[i % colours.length];
+      piece.style.setProperty("--time", `${2.4 + Math.random() * 2}s`);
+      piece.style.setProperty("--drift", `${-90 + Math.random() * 180}px`);
+      piece.style.animationDelay = `${Math.random() * .7}s`;
+      confettiLayer.appendChild(piece);
+    }
+    setTimeout(() => { confettiLayer.innerHTML = ""; }, 5200);
+  }
+
+  function preloadImages() {
+    [...new Set(questions.map(q => q.image))].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }
+
+  document.getElementById("start-btn").addEventListener("click", startGame);
+  document.getElementById("again-btn").addEventListener("click", startGame);
+  preloadImages();
+  setTimeout(() => show("start"), SPLASH_TIME);
+})();
 </script>
 </body>
 </html>
